@@ -73,7 +73,9 @@ TIXMIX - דרישה.pdf / *.docx       ← original requirement spec (source of 
 
 ## 8. Open Questions / To Verify (Anti-Hallucination Register)
 Track unknowns here instead of guessing. Resolve with research or by asking the user — do not invent answers (see §10 Rule 1).
+* **Real payment gateway** — escrow + double-entry ledger are built, but money movement runs through a **DEV SANDBOX** `PaymentProvider` (`src/db/payment-provider.ts`) that moves no real money. Before production, implement the same interface with a real PCI-DSS gateway / Israeli card clearer (tokenized cards) and the ₪1 verification hold.
 * **Bit / PayBox integration** — is there a usable public/business API? Unverified.
+* ~~Client accounts~~ — **RESOLVED**: client registration/login/session built; buyers submit requests from the show page.
 * **Ticket authenticity verification** — no known public issuer API; assume a manual Admin-review fallback until proven otherwise.
 * ~~App framework~~ — **DECIDED: Next.js full-stack** (see §6). ORM (Drizzle vs Prisma) to confirm during Phase 1.
 * **Legal/regulatory** — Israeli ticket-resale / anti-scalping law, consumer protection, escrow & payment licensing — must be researched.
