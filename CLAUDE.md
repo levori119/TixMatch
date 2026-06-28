@@ -51,7 +51,7 @@ Source of truth: `TIXMIX - דרישה.pdf` / `מערכת סחר בכרטיסי �
 * **Database:** **Neon** (serverless Postgres). Use the **pooled** connection string in the app; the **direct** string for migrations; use **Neon branches** for staging/preview data.
 * **Secrets** live only in Railway Variables / Neon — never in git. `.env` is gitignored.
 * **Full setup steps:** [docs/SETUP-Railway-GitHub-Neon.md](docs/SETUP-Railway-GitHub-Neon.md).
-* **App framework (backend language/framework, frontend) is NOT yet finalized** — see §8.
+* **App framework: Next.js full-stack** (React + TypeScript) — one codebase serving the responsive Client (mobile-first + desktop), the Admin dashboard, and the API routes. Chosen for fastest path to MVP, easy Railway deploy, and B2B embeddable widget. Native mobile (Expo) can be added later. Recommended supporting choices (confirm as we build): Tailwind + shadcn/ui with RTL, and Drizzle or Prisma as the Neon Postgres ORM.
 
 ---
 
@@ -75,7 +75,7 @@ TIXMIX - דרישה.pdf / *.docx       ← original requirement spec (source of 
 Track unknowns here instead of guessing. Resolve with research or by asking the user — do not invent answers (see §10 Rule 1).
 * **Bit / PayBox integration** — is there a usable public/business API? Unverified.
 * **Ticket authenticity verification** — no known public issuer API; assume a manual Admin-review fallback until proven otherwise.
-* **App framework** — backend language/framework and frontend stack not finalized (the setup guide uses Node/Express/`pg` only as a worked example).
+* ~~App framework~~ — **DECIDED: Next.js full-stack** (see §6). ORM (Drizzle vs Prisma) to confirm during Phase 1.
 * **Legal/regulatory** — Israeli ticket-resale / anti-scalping law, consumer protection, escrow & payment licensing — must be researched.
 * **Commission rate** — exact percentage TBD.
 

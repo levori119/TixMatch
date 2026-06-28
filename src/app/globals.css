@@ -1,0 +1,109 @@
+:root {
+  --bg: #0b0b14;
+  --surface: #16162a;
+  --surface-2: #1f1f3a;
+  --text: #f5f5ff;
+  --muted: #a6a6c8;
+  --accent: #ff2e93;
+  --accent-2: #7b5cff;
+  --success: #1fd286;
+  --border: #2c2c4a;
+  --radius: 16px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, "Segoe UI", Arial, sans-serif;
+}
+
+body {
+  background:
+    radial-gradient(1200px 600px at 100% -10%, rgba(123, 92, 255, 0.25), transparent),
+    radial-gradient(900px 500px at -10% 110%, rgba(255, 46, 147, 0.2), transparent),
+    var(--bg);
+  min-height: 100vh;
+}
+
+a { color: var(--accent); }
+
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 32px 20px 80px;
+}
+
+.brand {
+  font-weight: 800;
+  font-size: 28px;
+  letter-spacing: -0.5px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-top: 24px;
+}
+
+.label {
+  display: block;
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.input {
+  width: 100%;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 16px;
+}
+
+.input:focus {
+  outline: 2px solid var(--accent-2);
+  outline-offset: 1px;
+}
+
+.row { margin-bottom: 18px; }
+
+.hint { font-size: 13px; color: var(--muted); margin-top: 6px; }
+
+.btn {
+  display: inline-block;
+  border: none;
+  cursor: pointer;
+  border-radius: 999px;
+  padding: 14px 28px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+}
+
+.btn:active { transform: translateY(1px); }
+
+.notice {
+  margin-top: 18px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: rgba(31, 210, 134, 0.12);
+  border: 1px solid rgba(31, 210, 134, 0.4);
+  color: var(--success);
+  font-weight: 600;
+}
+
+.muted { color: var(--muted); }
+.big { font-size: 22px; font-weight: 800; }

@@ -11,6 +11,11 @@ dist/
 build/
 coverage/
 
+# Next.js
+.next/
+next-env.d.ts
+*.tsbuildinfo
+
 # OS / editor
 .DS_Store
 Thumbs.db
