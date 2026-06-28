@@ -9,6 +9,7 @@ import {
   type DeliveryType,
   type Tier,
 } from "@/db/listings";
+import { runMatcherForShow } from "@/db/matching";
 
 export type FormState = { ok: boolean; message: string };
 
@@ -83,7 +84,11 @@ export async function createListingAction(
     tiers,
   );
 
+  // newly available inventory may satisfy buyers already waiting in the FCFS queue
+  await runMatcherForShow(showId);
+
   revalidatePath("/admin/listings");
+  revalidatePath("/admin/requests");
   return { ok: true, message: "הכרטיס פורסם למכירה ✓" };
 }
 
