@@ -16,6 +16,7 @@ import {
   platformSettings,
 } from "./schema";
 import { paymentProvider } from "./payment-provider";
+import { hasVerifiedCard } from "./payments";
 
 type Tx = Parameters<Parameters<typeof db.transaction>[0]>[0];
 
@@ -62,6 +63,9 @@ export class EscrowError extends Error {}
 
 /** Buyer funds escrow: offer_accepted -> funds_held (places a hold). */
 export async function payForTrade(tradeId: number, actorId: number) {
+  if (!(await hasVerifiedCard(actorId))) {
+    throw new EscrowError("יש להוסיף ולאמת כרטיס אשראי לפני תשלום.");
+  }
   return db.transaction(async (tx) => {
     const [t] = await tx.select().from(trades).where(eq(trades.id, tradeId));
     if (!t) throw new EscrowError("עסקה לא נמצאה.");
