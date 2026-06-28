@@ -28,6 +28,7 @@ export default function RootLayout({
           </a>
           <div className="nav-links">
             <a href="/">בית</a>
+            <a href="/browse">כרטיסים</a>
             <a href="/admin/settings">ניהול</a>
           </div>
         </nav>

@@ -38,8 +38,8 @@ export default function Home() {
           את שלו — בלי עוקץ ובלי הפתעות.
         </p>
         <div className="cta-row">
-          <a href="/admin/settings" className="btn">
-            כניסה למערכת ↩
+          <a href="/browse" className="btn">
+            עיון בכרטיסים 🎟️
           </a>
           <a href="#how" className="btn ghost">
             איך זה עובד?
