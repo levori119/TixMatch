@@ -26,7 +26,62 @@ TixMix ensures a fair, transparent, and secure transaction environment where the
 
 ---
 
-## 4. Personas & Persona Execution Rules
+## 4. The Matching Engine & FCFS Mechanics (from original requirement spec)
+Source of truth: `TIXMIX - דרישה.pdf` / `מערכת סחר בכרטיסי הופעות.docx`.
+* **Seller listing fields:** event (menu), venue (menu), date, note, asking price, **price type** (at-cost / above-cost / discounted), delivery type (physical / digital), quantity, "sold individually?" flag, **minimum tickets per sale**, and **tiered price by quantity** (bulk discount).
+* **Buyer request fields:** event / date / venue (menus), **price range** (from–to), and **min/max quantity**.
+* **The engine:** offered tickets are indexed by price range; buyer requests are queued strictly by request time (**FCFS**). The earliest request searches the offered pool first and may be matched to a ticket **cheaper** than its stated max.
+* **₪1 verification hold:** placed on every card registration to confirm the money source is genuine. On full settlement the hold returns in full to the **seller**; for the **buyer** the returned amount is **less ₪1** (i.e. ₪1 acts as the verification fee).
+* **Business model:** low commission per action (inclusive of clearing fees); platform publishes events/tickets; B2B embedding in venue/club sites for a monthly fee or traffic-share.
+* **Standby & analytics:** chronological waiting list for sold-out shows, plus predictive probability of securing a ticket when SOLD OUT.
+* **Swaps:** exchange between identical shows on different dates.
+
+---
+
+## 5. Locale & Market Context
+* **Primary market: Israel.** Currency is **ILS (₪)**. Primary language is **Hebrew** — the UI must be **RTL-first** and fully support Hebrew text. Test data must include Hebrew, RTL, and emoji strings.
+* **Payment rails are Israeli:** local credit-card clearers and Israeli P2P apps (Bit / PayBox — availability of an integration API is unverified, see §8).
+* **Legal/regulatory:** Israeli consumer-protection law and any ticket-resale / anti-scalping regulation, plus payment/escrow licensing, must be **researched before relying on them — never assumed** (ties to §10 Rule 1).
+
+---
+
+## 6. Tech Stack & Infrastructure
+* **Source control:** GitHub — `https://github.com/levori119/TIXMIX.git`. Trunk-based on protected `main` (see the `dev-process` skill).
+* **Runtime/hosting:** **Railway**, auto-deploying from GitHub on push.
+* **Database:** **Neon** (serverless Postgres). Use the **pooled** connection string in the app; the **direct** string for migrations; use **Neon branches** for staging/preview data.
+* **Secrets** live only in Railway Variables / Neon — never in git. `.env` is gitignored.
+* **Full setup steps:** [docs/SETUP-Railway-GitHub-Neon.md](docs/SETUP-Railway-GitHub-Neon.md).
+* **App framework (backend language/framework, frontend) is NOT yet finalized** — see §8.
+
+---
+
+## 7. Repository Structure & How to Work Here
+```
+CLAUDE.md                         ← this file (project context + rules)
+.claude/skills/
+  software-architect/SKILL.md     ← architecture, data model, payments, concurrency
+  ux-designer/SKILL.md            ← screens, flows, design system, accessibility
+  qa-engineer/SKILL.md            ← test cases, edge/race/payment, QA gates
+  dev-process/SKILL.md            ← end-to-end workflow + quality gates
+docs/SETUP-Railway-GitHub-Neon.md ← infra setup guide
+TIXMIX - דרישה.pdf / *.docx       ← original requirement spec (source of truth)
+```
+* When designing/building/testing a feature, **invoke the matching skill** for the hat you're wearing, and follow the **`dev-process` gates** in order.
+* The skills are grounded in researched, real-world practice and each carries a Sources list — prefer them over improvising.
+
+---
+
+## 8. Open Questions / To Verify (Anti-Hallucination Register)
+Track unknowns here instead of guessing. Resolve with research or by asking the user — do not invent answers (see §10 Rule 1).
+* **Bit / PayBox integration** — is there a usable public/business API? Unverified.
+* **Ticket authenticity verification** — no known public issuer API; assume a manual Admin-review fallback until proven otherwise.
+* **App framework** — backend language/framework and frontend stack not finalized (the setup guide uses Node/Express/`pg` only as a worked example).
+* **Legal/regulatory** — Israeli ticket-resale / anti-scalping law, consumer protection, escrow & payment licensing — must be researched.
+* **Commission rate** — exact percentage TBD.
+
+---
+
+## 9. Personas & Persona Execution Rules
 Whenever analyzing, designing, or implementing features, you must assume and invoke the specific skillset requested. You must alternate or combine these professional hats as needed:
 
 ### 🎓 The Software Architect Skillset
@@ -44,7 +99,7 @@ Whenever analyzing, designing, or implementing features, you must assume and inv
 
 ---
 
-## 5. Strict Operational Rules for Claude
+## 10. Strict Operational Rules for Claude
 
 ### 🚫 Rule 1: Anti-Hallucination, Real Clearing, & Legal Compliance
 * **DO NOT invent or guess architecture constraints, legal frameworks, or clearing methods.**
