@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useRef } from "react";
 import { createRequestAction, type FormState } from "./actions";
 import { ShowPicker, type ShowOption } from "@/app/_components/show-picker";
+import { SearchableSelect } from "@/app/_components/searchable-select";
 
 const initial: FormState = { ok: false, message: "" };
 type Option = { id: number; label: string };
@@ -35,13 +36,8 @@ export function RequestForm({
 
       <div className="grid-2">
         <div className="row">
-          <label className="label" htmlFor="r-buyer">קונה *</label>
-          <select className="input" id="r-buyer" name="buyerId" required defaultValue="">
-            <option value="" disabled>בחר קונה…</option>
-            {buyers.map((b) => (
-              <option key={b.id} value={b.id}>{b.label}</option>
-            ))}
-          </select>
+          <label className="label">קונה *</label>
+          <SearchableSelect name="buyerId" placeholder="בחר קונה…" options={buyers} />
         </div>
         <div className="row">
           <label className="label">מופע *</label>

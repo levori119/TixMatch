@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useRef } from "react";
 import { createShowAction, type FormState } from "./actions";
+import { SearchableSelect } from "@/app/_components/searchable-select";
 
 const initial: FormState = { ok: false, message: "" };
 
@@ -36,22 +37,20 @@ export function ShowForm({
       <p className="section-title">הוספת מופע</p>
       <div className="grid-2">
         <div className="row">
-          <label className="label" htmlFor="s-event">הופעה *</label>
-          <select className="input" id="s-event" name="eventId" required defaultValue="">
-            <option value="" disabled>בחר הופעה…</option>
-            {events.map((e) => (
-              <option key={e.id} value={e.id}>{e.name}</option>
-            ))}
-          </select>
+          <label className="label">הופעה *</label>
+          <SearchableSelect
+            name="eventId"
+            placeholder="בחר הופעה…"
+            options={events.map((e) => ({ id: e.id, label: e.name }))}
+          />
         </div>
         <div className="row">
-          <label className="label" htmlFor="s-venue">אולם *</label>
-          <select className="input" id="s-venue" name="venueId" required defaultValue="">
-            <option value="" disabled>בחר אולם…</option>
-            {venues.map((v) => (
-              <option key={v.id} value={v.id}>{v.name}</option>
-            ))}
-          </select>
+          <label className="label">אולם *</label>
+          <SearchableSelect
+            name="venueId"
+            placeholder="בחר אולם…"
+            options={venues.map((v) => ({ id: v.id, label: v.name }))}
+          />
         </div>
         <div className="row">
           <label className="label" htmlFor="s-date">תאריך ושעה *</label>
