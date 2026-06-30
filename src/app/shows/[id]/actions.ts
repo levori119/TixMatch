@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { currentUser } from "@/lib/auth";
 import { createBuyRequest, runMatcherForShow } from "@/db/matching";
+import { recordShowSignal } from "@/db/affinity";
 
 export type BuyState = { ok: boolean; message: string };
 
@@ -41,6 +42,8 @@ export async function submitBuyRequestAction(
     qtyMin,
     qtyMax,
   });
+
+  await recordShowSignal(user.id, showId, 3); // buy intent is a strong taste signal
 
   const results = await runMatcherForShow(showId);
   revalidatePath(`/shows/${showId}`);

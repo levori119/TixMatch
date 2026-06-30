@@ -51,6 +51,7 @@ export function listUpcomingShows() {
   return db
     .select({
       id: shows.id,
+      eventId: events.id,
       eventName: events.name,
       artist: events.artist,
       venueName: venues.name,
@@ -76,7 +77,7 @@ export function listUpcomingShows() {
       and(eq(listingPriceTiers.listingId, listings.id), eq(listingPriceTiers.minQty, 1)),
     )
     .where(gt(shows.startsAt, sql`now() - interval '6 hours'`))
-    .groupBy(shows.id, events.name, events.artist, venues.name, venues.city, shows.startsAt, shows.status)
+    .groupBy(shows.id, events.id, events.name, events.artist, venues.name, venues.city, shows.startsAt, shows.status)
     .orderBy(asc(shows.startsAt));
 }
 
@@ -84,6 +85,7 @@ export async function getShow(showId: number) {
   const rows = await db
     .select({
       id: shows.id,
+      eventId: events.id,
       eventName: events.name,
       artist: events.artist,
       venueName: venues.name,

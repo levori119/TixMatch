@@ -2,10 +2,11 @@
 
 import { useActionState, useEffect, useRef } from "react";
 import { createEventAction, type FormState } from "./actions";
+import { GenreCheckboxes } from "./genre-checkboxes";
 
 const initial: FormState = { ok: false, message: "" };
 
-export function EventForm() {
+export function EventForm({ genres }: { genres: { id: number; nameHe: string; emoji: string | null }[] }) {
   const [state, action, pending] = useActionState(createEventAction, initial);
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -29,6 +30,10 @@ export function EventForm() {
           <label className="label" htmlFor="e-cat">קטגוריה</label>
           <input className="input" id="e-cat" name="category" placeholder="פופ / רוק / סטנדאפ…" />
         </div>
+      </div>
+      <div className="row">
+        <label className="label">סגנונות מוזיקה</label>
+        <GenreCheckboxes genres={genres} />
       </div>
       <button className="btn" type="submit" disabled={pending}>
         {pending ? "מוסיף…" : "➕ הוספת הופעה"}

@@ -406,6 +406,28 @@ select.input { appearance: none; }
 .scard .from { font-weight: 900; }
 .scard .from small { font-weight: 600; color: var(--muted); font-size: 12px; }
 .scard .none { font-size: 13px; color: var(--muted); }
+.scard .gtags { display: flex; flex-wrap: wrap; gap: 5px; }
+.gtag {
+  font-size: 11px; font-weight: 700; color: var(--text);
+  background: rgba(255,255,255,0.07); border: 1px solid var(--border);
+  border-radius: 999px; padding: 3px 8px;
+}
+.rowhead {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 19px; font-weight: 900; letter-spacing: -0.3px; margin: 8px 0 12px;
+}
+
+/* genre checkbox chips (admin) */
+.genrechips { display: flex; flex-wrap: wrap; gap: 8px; }
+.genrechk { cursor: pointer; }
+.genrechk input { position: absolute; opacity: 0; width: 0; height: 0; }
+.genrechk span {
+  display: inline-block; border: 1px solid var(--border); background: var(--surface);
+  color: var(--text); border-radius: 999px; padding: 7px 13px; font-size: 13px; font-weight: 700;
+  transition: all 0.12s ease;
+}
+.genrechk:has(input:checked) span { background: var(--grad); border-color: transparent; }
+.genrechk input:focus-visible + span { outline: 2px solid var(--violet); outline-offset: 1px; }
 
 /* bento action tiles (account hub) */
 .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }

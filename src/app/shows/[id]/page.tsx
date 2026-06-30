@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getShow, getActiveListingsForShow } from "@/db/public";
+import { genresForEventIds } from "@/db/genres";
+import { recordShowSignal } from "@/db/affinity";
 import { currentUser } from "@/lib/auth";
 import { coverGradient } from "@/lib/cover";
 import { BuyBox } from "./buy-box";
@@ -36,6 +38,13 @@ export default async function ShowDetailPage({
 
   const listings = await getActiveListingsForShow(showId);
   const user = await currentUser();
+
+  const genresByEvent = await genresForEventIds([show.eventId]);
+  const showGenres = genresByEvent.get(show.eventId) ?? [];
+
+  // record a taste signal (a view) for logged-in users
+  if (user) await recordShowSignal(user.id, showId, 1);
+
   const fromPrice =
     listings.length > 0
       ? `₪${Math.min(...listings.map((l) => l.basePriceAgorot ?? Infinity)) / 100}`
@@ -59,6 +68,9 @@ export default async function ShowDetailPage({
               📅 {when.toLocaleDateString("he-IL", { day: "numeric", month: "long" })} ·{" "}
               {when.toLocaleTimeString("he-IL", { hour: "2-digit", minute: "2-digit" })}
             </span>
+            {showGenres.map((g) => (
+              <span key={g.slug} className="metachip">{g.emoji} {g.nameHe}</span>
+            ))}
           </div>
         </div>
       </div>

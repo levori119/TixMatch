@@ -248,3 +248,38 @@ export const auditLog = pgTable(
     byActor: index("audit_actor_idx").on(t.actorId),
   }),
 );
+
+// ---------- music genres, event tagging, and per-user taste ----------
+export const genres = pgTable("genres", {
+  id: serial("id").primaryKey(),
+  slug: text("slug").notNull().unique(),
+  nameHe: text("name_he").notNull(),
+  emoji: text("emoji"),
+});
+
+export const eventGenres = pgTable(
+  "event_genres",
+  {
+    id: serial("id").primaryKey(),
+    eventId: integer("event_id").notNull().references(() => events.id),
+    genreId: integer("genre_id").notNull().references(() => genres.id),
+  },
+  (t) => ({
+    uniq: uniqueIndex("event_genre_uniq").on(t.eventId, t.genreId),
+    byEvent: index("event_genres_event_idx").on(t.eventId),
+  }),
+);
+
+export const userGenreAffinity = pgTable(
+  "user_genre_affinity",
+  {
+    id: serial("id").primaryKey(),
+    userId: integer("user_id").notNull().references(() => users.id),
+    genreId: integer("genre_id").notNull().references(() => genres.id),
+    score: integer("score").notNull().default(0),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => ({
+    uniq: uniqueIndex("user_genre_uniq").on(t.userId, t.genreId),
+  }),
+);

@@ -8,6 +8,13 @@
       "when": 1782656819624,
       "tag": "0000_init_schema",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1782842403143,
+      "tag": "0001_genres_affinity",
+      "breakpoints": true
     }
   ]
 }
