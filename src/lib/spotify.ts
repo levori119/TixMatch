@@ -121,33 +121,40 @@ export async function getSpotifyTaste(token: string): Promise<SpotifyTaste> {
   return { artistCount, trackCount, genres, artistNames: Array.from(names) };
 }
 
-// map Spotify's granular English genre strings to our genre slugs
+// non-national genres (single slug)
 const RULES: { kw: string[]; slug: string }[] = [
   { kw: ["metal"], slug: "metal" },
-  { kw: ["rock"], slug: "rock" },
-  { kw: ["hip hop", "hip-hop", "rap", "trap"], slug: "hiphop" },
   { kw: ["jazz"], slug: "jazz" },
   { kw: ["classical", "orchestra", "baroque", "opera"], slug: "classical" },
   { kw: ["mizrahi", "mizrahit"], slug: "mizrahi" },
   { kw: ["hasidic", "jewish", "kabbalah", "nigun"], slug: "hasidic" },
-  { kw: ["indie"], slug: "indie" },
   { kw: ["blues"], slug: "blues" },
+  { kw: ["reggae", "dancehall", "ska"], slug: "reggae" },
+  { kw: ["country"], slug: "country" },
+  { kw: ["latin", "reggaeton", "salsa"], slug: "latin" },
   { kw: ["soul", "r&b", "rnb", "funk"], slug: "rnb" },
   { kw: ["house", "techno", "edm", "electro", "trance", "dance", "electronic"], slug: "electronic" },
-  { kw: ["folk", "singer-songwriter"], slug: "folk" },
   { kw: ["world", "ethnic", "oriental"], slug: "world" },
-  { kw: ["pop"], slug: "pop" },
+  { kw: ["indie", "alternative"], slug: "indie" },
+];
+// national genres — resolved to _il or _intl based on the string
+const NATIONAL: { kw: string[]; base: string }[] = [
+  { kw: ["rock"], base: "rock" },
+  { kw: ["hip hop", "hip-hop", "rap", "trap"], base: "hiphop" },
+  { kw: ["folk", "singer-songwriter"], base: "folk" },
+  { kw: ["pop"], base: "pop" },
 ];
 
-/** Count our-slug weights from a list of Spotify genre strings. */
+/** Count our-slug weights from a list of Spotify genre strings (best-effort). */
 export function mapGenresToSlugCounts(spotifyGenres: string[]): Map<string, number> {
   const counts = new Map<string, number>();
+  const inc = (s: string) => counts.set(s, (counts.get(s) ?? 0) + 1);
   for (const g of spotifyGenres) {
     const low = g.toLowerCase();
-    for (const rule of RULES) {
-      if (rule.kw.some((k) => low.includes(k))) {
-        counts.set(rule.slug, (counts.get(rule.slug) ?? 0) + 1);
-      }
+    const isIL = /israeli|hebrew|mizrahi/.test(low);
+    for (const rule of RULES) if (rule.kw.some((k) => low.includes(k))) inc(rule.slug);
+    for (const rule of NATIONAL) {
+      if (rule.kw.some((k) => low.includes(k))) inc(`${rule.base}_${isIL ? "il" : "intl"}`);
     }
   }
   return counts;

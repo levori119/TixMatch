@@ -445,6 +445,15 @@ select.input { appearance: none; }
 .ucell .uemail { color: var(--muted); font-size: 12px; }
 .utable td.stale { color: var(--danger); font-weight: 700; }
 
+/* taste bars (account) */
+.taste { display: flex; flex-direction: column; gap: 10px; }
+.tasterow { display: grid; grid-template-columns: 130px 1fr 34px; align-items: center; gap: 10px; }
+.tastelabel { font-size: 14px; font-weight: 700; white-space: nowrap; }
+.tastebar { height: 10px; border-radius: 999px; background: rgba(255,255,255,0.08); overflow: hidden; }
+.tastebar span { display: block; height: 100%; border-radius: 999px; background: var(--grad); }
+.tastescore { font-size: 13px; color: var(--muted); text-align: left; }
+@media (max-width: 540px) { .tasterow { grid-template-columns: 110px 1fr 30px; } }
+
 /* bento action tiles (account hub) */
 .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
 .tile {
