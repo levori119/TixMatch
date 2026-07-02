@@ -26,6 +26,31 @@ export async function recordShowSignal(userId: number, showId: number, weight: n
   }
 }
 
+/** Bump affinity by genre slug (used by the Spotify import). Returns genres touched. */
+export async function bumpAffinityBySlugs(
+  userId: number,
+  slugCounts: Map<string, number>,
+): Promise<number> {
+  if (slugCounts.size === 0) return 0;
+  const all = await db.select({ id: genres.id, slug: genres.slug }).from(genres);
+  const idBySlug = new Map(all.map((g) => [g.slug, g.id]));
+  let touched = 0;
+  for (const [slug, count] of slugCounts) {
+    const genreId = idBySlug.get(slug);
+    if (!genreId) continue;
+    const weight = Math.min(count, 15); // cap so one genre can't dominate
+    await db
+      .insert(userGenreAffinity)
+      .values({ userId, genreId, score: weight })
+      .onConflictDoUpdate({
+        target: [userGenreAffinity.userId, userGenreAffinity.genreId],
+        set: { score: sql`${userGenreAffinity.score} + ${weight}`, updatedAt: new Date() },
+      });
+    touched++;
+  }
+  return touched;
+}
+
 /** Map of genreId -> score for a user. */
 export async function getAffinityMap(userId: number): Promise<Map<number, number>> {
   const rows = await db

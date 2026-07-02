@@ -4,8 +4,22 @@ import { logoutToHomeAction } from "../auth-actions";
 
 export const dynamic = "force-dynamic";
 
-export default async function AccountPage() {
+const spotifyMsg: Record<string, { ok: boolean; text: string }> = {
+  ok: { ok: true, text: "🎧 ייבאנו את הטעם המוזיקלי שלך מספוטיפיי! גלה המלצות מותאמות." },
+  empty: { ok: true, text: "התחברת לספוטיפיי, אך לא זוהו סגנונות תואמים." },
+  denied: { ok: false, text: "החיבור לספוטיפיי בוטל." },
+  state: { ok: false, text: "החיבור לספוטיפיי נכשל (אימות). נסה שוב." },
+  error: { ok: false, text: "אירעה שגיאה בחיבור לספוטיפיי." },
+};
+
+export default async function AccountPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ spotify?: string }>;
+}) {
   const user = await currentUser();
+  const { spotify } = await searchParams;
+  const spMsg = spotify ? spotifyMsg[spotify] : null;
 
   if (!user) {
     return (
@@ -43,6 +57,16 @@ export default async function AccountPage() {
           {user.email} · {user.role === "admin" ? "מנהל 🛡️" : "חשבון לקוח"}
         </div>
       </div>
+
+      {spMsg ? (
+        <div className={`notice ${spMsg.ok ? "ok" : "err"}`} role="status">
+          {spMsg.ok ? "✓" : "⚠"} {spMsg.text}
+        </div>
+      ) : null}
+
+      <a href="/api/spotify/login" className="btn" style={{ margin: "6px 0 18px", background: "linear-gradient(90deg,#1db954,#1ed760)" }}>
+        🎧 חבר את הספוטיפיי שלך
+      </a>
 
       <div className="tiles">
         {tiles.map((t) => (
