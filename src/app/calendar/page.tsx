@@ -110,30 +110,35 @@ export default async function CalendarPage({
 
         <aside className="cal-side">
           <div className="adhead">{adHead}</div>
-          {banners.map(({ r, g }) => {
-            const price = ils(r.fromPriceAgorot);
-            return (
-              <Link key={r.id} href={`/shows/${r.id}`} className="banner">
-                <div className="banner-cover" style={{ background: coverGradient(r.eventName) }}>
-                  <span className="ini">{initialOf(r.eventName)}</span>
-                  <span className="promo">מודעה</span>
-                </div>
-                <div className="banner-body">
-                  <span className="ev">{r.eventName}</span>
-                  <span className="vn">{r.venueName}{r.city ? ` · ${r.city}` : ""}</span>
-                  {g.length > 0 ? <span className="gtag">{g[0].emoji} {g[0].nameHe}</span> : null}
-                  <div className="banner-foot">
-                    {price ? (
-                      <span className="from">{price} <small>החל מ-</small></span>
-                    ) : (
-                      <span className="from" style={{ fontSize: 13, color: "var(--muted)" }}>בקרוב</span>
-                    )}
-                    <span className="cta">{price ? "כרטיסים →" : "פרטים →"}</span>
-                  </div>
-                </div>
-              </Link>
-            );
-          })}
+          <div className="bannerscroll">
+            {/* duplicated for a seamless infinite marquee */}
+            <div className="bannertrack">
+              {[...banners, ...banners].map(({ r, g }, i) => {
+                const price = ils(r.fromPriceAgorot);
+                return (
+                  <Link key={`${r.id}-${i}`} href={`/shows/${r.id}`} className="banner" aria-hidden={i >= banners.length}>
+                    <div className="banner-cover" style={{ background: coverGradient(r.eventName) }}>
+                      <span className="ini">{initialOf(r.eventName)}</span>
+                      <span className="promo">מודעה</span>
+                    </div>
+                    <div className="banner-body">
+                      <span className="ev">{r.eventName}</span>
+                      <span className="vn">{r.venueName}{r.city ? ` · ${r.city}` : ""}</span>
+                      {g.length > 0 ? <span className="gtag">{g[0].emoji} {g[0].nameHe}</span> : null}
+                      <div className="banner-foot">
+                        {price ? (
+                          <span className="from">{price} <small>החל מ-</small></span>
+                        ) : (
+                          <span className="from" style={{ fontSize: 13, color: "var(--muted)" }}>בקרוב</span>
+                        )}
+                        <span className="cta">{price ? "כרטיסים →" : "פרטים →"}</span>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
         </aside>
       </div>
     </main>

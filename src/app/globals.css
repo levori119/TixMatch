@@ -532,11 +532,25 @@ select.input { appearance: none; }
 .banner-foot .from { font-weight: 900; }
 .banner-foot .from small { font-weight: 600; color: var(--muted); font-size: 11px; }
 .banner-foot .cta { font-size: 13px; font-weight: 800; color: var(--accent); }
-/* on mobile show banners as a horizontal strip */
+/* auto-scrolling marquee of banners (vertical on desktop) */
+.bannerscroll { overflow: hidden; max-height: calc(100vh - 130px); mask-image: linear-gradient(to bottom, transparent, #000 6%, #000 94%, transparent); }
+.bannertrack { display: flex; flex-direction: column; gap: 12px; animation: bmarqueeY 26s linear infinite; }
+.bannerscroll:hover .bannertrack { animation-play-state: paused; }
+@keyframes bmarqueeY { from { transform: translateY(0); } to { transform: translateY(-50%); } }
+@keyframes bmarqueeX { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* on mobile show banners as a horizontal auto-scrolling strip */
 @media (max-width: 899px) {
-  .cal-side { position: static; flex-direction: row; overflow-x: auto; padding-bottom: 6px; order: -1; }
+  .cal-side { position: static; order: -1; }
   .cal-side .adhead { display: none; }
+  .bannerscroll { max-height: none; overflow: hidden; mask-image: linear-gradient(to left, transparent, #000 5%, #000 95%, transparent); }
+  .bannertrack { flex-direction: row; animation-name: bmarqueeX; animation-duration: 24s; }
   .banner { flex: 0 0 230px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bannertrack { animation: none !important; }
+  .bannerscroll { overflow-x: auto; mask-image: none; }
 }
 
 /* bento action tiles (account hub) */
