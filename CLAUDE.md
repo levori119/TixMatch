@@ -27,7 +27,7 @@ TixMatch ensures a fair, transparent, and secure transaction environment where t
 ---
 
 ## 4. The Matching Engine & FCFS Mechanics (from original requirement spec)
-Source of truth: `TIXMIX - דרישה.pdf` / `מערכת סחר בכרטיסי הופעות.docx`.
+Source of truth: `TIXMATCH - דרישה.pdf` / `מערכת סחר בכרטיסי הופעות.docx`.
 * **Seller listing fields:** event (menu), venue (menu), date, note, asking price, **price type** (at-cost / above-cost / discounted), delivery type (physical / digital), quantity, "sold individually?" flag, **minimum tickets per sale**, and **tiered price by quantity** (bulk discount).
 * **Buyer request fields:** event / date / venue (menus), **price range** (from–to), and **min/max quantity**.
 * **The engine:** offered tickets are indexed by price range; buyer requests are queued strictly by request time (**FCFS**). The earliest request searches the offered pool first and may be matched to a ticket **cheaper** than its stated max.
@@ -46,7 +46,7 @@ Source of truth: `TIXMIX - דרישה.pdf` / `מערכת סחר בכרטיסי �
 ---
 
 ## 6. Tech Stack & Infrastructure
-* **Source control:** GitHub — `https://github.com/levori119/TIXMIX.git`. Trunk-based on protected `main` (see the `dev-process` skill).
+* **Source control:** GitHub — `https://github.com/levori119/TixMatch.git`. Trunk-based on protected `main` (see the `dev-process` skill).
 * **Runtime/hosting:** **Railway**, auto-deploying from GitHub on push.
 * **Database:** **Neon** (serverless Postgres). Use the **pooled** connection string in the app; the **direct** string for migrations; use **Neon branches** for staging/preview data.
 * **Secrets** live only in Railway Variables / Neon — never in git. `.env` is gitignored.
@@ -64,7 +64,7 @@ CLAUDE.md                         ← this file (project context + rules)
   qa-engineer/SKILL.md            ← test cases, edge/race/payment, QA gates
   dev-process/SKILL.md            ← end-to-end workflow + quality gates
 docs/SETUP-Railway-GitHub-Neon.md ← infra setup guide
-TIXMIX - דרישה.pdf / *.docx       ← original requirement spec (source of truth)
+TIXMATCH - דרישה.pdf / *.docx       ← original requirement spec (source of truth)
 ```
 * When designing/building/testing a feature, **invoke the matching skill** for the hat you're wearing, and follow the **`dev-process` gates** in order.
 * The skills are grounded in researched, real-world practice and each carries a Sources list — prefer them over improvising.
