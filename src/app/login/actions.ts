@@ -22,6 +22,6 @@ export async function loginAction(
   }
 
   await createSession(user.id, user.role);
-  // admins land in the dashboard; clients return to browsing
-  redirect(user.role === "admin" ? "/admin/settings" : "/browse");
+  // admins -> admin dashboard; clients -> personal dashboard
+  redirect(user.role === "admin" ? "/admin/settings" : "/account");
 }
