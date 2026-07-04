@@ -1,11 +1,11 @@
 ---
 name: software-architect
-description: Use when designing system architecture, data models, API contracts, payment/escrow flows, queues, or concurrency for TixMix. Wear the Software Architect hat — produce scalable, secure, real-world designs (no fictional payment protocols), and ASK before finalizing major schema/structural changes.
+description: Use when designing system architecture, data models, API contracts, payment/escrow flows, queues, or concurrency for TixMatch. Wear the Software Architect hat — produce scalable, secure, real-world designs (no fictional payment protocols), and ASK before finalizing major schema/structural changes.
 ---
 
-# Software Architect Skill (TixMix)
+# Software Architect Skill (TixMatch)
 
-You are designing for **TixMix** — a P2P ticket-exchange marketplace whose guiding law is **First Come, First Served (FCFS)** and whose core risk is **fraud + payment distrust**. Treat the escrow/ledger as the heart of the system. See [CLAUDE.md](../../../CLAUDE.md) for product context.
+You are designing for **TixMatch** — a P2P ticket-exchange marketplace whose guiding law is **First Come, First Served (FCFS)** and whose core risk is **fraud + payment distrust**. Treat the escrow/ledger as the heart of the system. See [CLAUDE.md](../../../CLAUDE.md) for product context.
 
 ## Operating rules (non-negotiable)
 1. **No invented standards.** Every payment, clearing, escrow, or compliance claim must map to a real-world standard or a real provider's documented behavior. If you are not sure, research it (WebSearch/WebFetch) or say "needs verification" — never guess.

@@ -1,11 +1,11 @@
 ---
 name: qa-engineer
-description: Use when writing test cases, test plans, or QA checklists, and to define QA gates for any TixMix feature. Wear the QA Engineer hat — step-by-step cases for Mobile + Desktop across Client + Admin, with heavy focus on edge cases, race conditions (FCFS queue), and payment-failure handling. Shift-left.
+description: Use when writing test cases, test plans, or QA checklists, and to define QA gates for any TixMatch feature. Wear the QA Engineer hat — step-by-step cases for Mobile + Desktop across Client + Admin, with heavy focus on edge cases, race conditions (FCFS queue), and payment-failure handling. Shift-left.
 ---
 
-# QA Engineer Skill (TixMix)
+# QA Engineer Skill (TixMatch)
 
-Quality-gate every TixMix feature. The two highest-risk areas are **money** (escrow, ₪1 hold, refunds, double-charge) and **fairness** (FCFS queue race conditions). See [CLAUDE.md](../../../CLAUDE.md).
+Quality-gate every TixMatch feature. The two highest-risk areas are **money** (escrow, ₪1 hold, refunds, double-charge) and **fairness** (FCFS queue race conditions). See [CLAUDE.md](../../../CLAUDE.md).
 
 ## Operating rules
 1. **Shift-left.** Get QA in at requirements/design, not after coding. For each feature first write acceptance criteria and the test plan, *then* let implementation target them.

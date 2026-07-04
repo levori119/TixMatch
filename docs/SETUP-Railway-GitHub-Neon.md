@@ -1,4 +1,4 @@
-# TixMix — Infrastructure Setup: GitHub + Neon + Railway
+# TixMatch — Infrastructure Setup: GitHub + Neon + Railway
 
 End-to-end steps to stand up the stack. Order matters: **GitHub (source) → Neon (database) → Railway (runtime)**. Verified against official Neon and Railway docs (links at bottom).
 
@@ -12,7 +12,7 @@ End-to-end steps to stand up the stack. Order matters: **GitHub (source) → Neo
 ---
 
 ## Step 1 — GitHub repository (source of truth)
-1. Create a new repo `tixmix` on GitHub (private to start).
+1. Create a new repo `tixmatch` on GitHub (private to start).
 2. Locally: `git init`, add a `.gitignore` that **excludes `.env`**, commit, and push to the repo.
 3. (Recommended) Protect `main`: Settings → Branches → add a rule requiring PRs + passing status checks before merge. This enforces the trunk-based flow in the **dev-process** skill.
 
@@ -57,7 +57,7 @@ Add a `start` script in `package.json` (`"start": "node server.js"`). Railway au
 ---
 
 ## Step 4 — Railway (runtime, continuous deploy from GitHub)
-1. Go to **railway.com/new** → **Deploy from GitHub repo** → authorize GitHub if prompted → pick `tixmix`. This sets up **auto-deploy on push**.
+1. Go to **railway.com/new** → **Deploy from GitHub repo** → authorize GitHub if prompted → pick `tixmatch`. This sets up **auto-deploy on push**.
 2. **Variables** tab → add:
    - `DATABASE_URL` = your Neon **pooled** connection string
    - any other secrets (gateway keys, etc.)

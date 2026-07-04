@@ -10,7 +10,7 @@ import { eq, or, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { users } from "@/db/schema";
 
-const SESSION_COOKIE = "tixmix_session";
+const SESSION_COOKIE = "tixmatch_session";
 const SESSION_TTL_SECONDS = 60 * 60 * 8; // 8 hours
 
 // ---------- password hashing (scrypt) ----------

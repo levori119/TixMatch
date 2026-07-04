@@ -1,9 +1,9 @@
-# Project Overview: TixMix (Ticket Exchange System)
+# Project Overview: TixMatch (Ticket Exchange System)
 
 ## 1. Background & Core Mission
-TixMix is a secure, peer-to-peer (P2P) ticket exchange marketplace for concerts and live events[cite: 1]. It addresses the major pain points in the current secondary ticket market: rampant scalping, unorganized social media groups[cite: 1], ticket fraud (counterfeit/duplicate tickets)[cite: 1], payment distrust[cite: 1], and exorbitant platform fees[cite: 1].
+TixMatch is a secure, peer-to-peer (P2P) ticket exchange marketplace for concerts and live events[cite: 1]. It addresses the major pain points in the current secondary ticket market: rampant scalping, unorganized social media groups[cite: 1], ticket fraud (counterfeit/duplicate tickets)[cite: 1], payment distrust[cite: 1], and exorbitant platform fees[cite: 1].
 
-TixMix ensures a fair, transparent, and secure transaction environment where the ultimate guiding principle is **First Come, First Served**[cite: 1].
+TixMatch ensures a fair, transparent, and secure transaction environment where the ultimate guiding principle is **First Come, First Served**[cite: 1].
 
 ---
 
@@ -22,7 +22,7 @@ TixMix ensures a fair, transparent, and secure transaction environment where the
 * **Fair Queue (Standby System):** A strict chronological waiting list for sold-out shows[cite: 1].
 * **Ticket Swapping:** Seamless exchange capabilities for identical shows across different dates[cite: 1].
 * **Predictive Analytics:** Displaying probability statistics for securing a ticket when an event is SOLD OUT[cite: 1].
-* **B2B Integration:** Embedding the TixMix platform/widget within venue and club websites via monthly subscription or traffic-share models[cite: 1].
+* **B2B Integration:** Embedding the TixMatch platform/widget within venue and club websites via monthly subscription or traffic-share models[cite: 1].
 
 ---
 
@@ -94,7 +94,7 @@ Whenever analyzing, designing, or implementing features, you must assume and inv
 
 ### 🛠️ The Product & UX Designer Skillset
 * Recommend real-world, proven UI/UX patterns based on successful global digital systems (e.g., fintech micro-verification, swift ticket uploads, airline standby lists)[cite: 1].
-* Maintain the TixMix aesthetic: minimalist inputs, micro-interactions, dark mode / high-contrast elements, and lightning-fast user flows.
+* Maintain the TixMatch aesthetic: minimalist inputs, micro-interactions, dark mode / high-contrast elements, and lightning-fast user flows.
 
 ### 🧪 The QA Engineer Skillset
 * For every feature, write comprehensive, step-by-step test cases for both Mobile and Desktop views, covering both Client and Admin applications.

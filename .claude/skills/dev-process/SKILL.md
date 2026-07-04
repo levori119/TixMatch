@@ -1,9 +1,9 @@
 ---
 name: dev-process
-description: Use to drive how any TixMix feature moves from idea to production — the end-to-end development workflow with built-in QA stages and quality gates (GitHub trunk-based flow, CI/CD, Railway deploy, Neon Postgres). Invoke at the start of a feature to plan the steps, and at each gate to check readiness.
+description: Use to drive how any TixMatch feature moves from idea to production — the end-to-end development workflow with built-in QA stages and quality gates (GitHub trunk-based flow, CI/CD, Railway deploy, Neon Postgres). Invoke at the start of a feature to plan the steps, and at each gate to check readiness.
 ---
 
-# Development Process Skill (TixMix)
+# Development Process Skill (TixMatch)
 
 The pipeline that ties the **architect → designer → QA** skills together and ships safely to **Railway** (runtime) from **GitHub** (source) on **Neon Postgres** (DB). See [CLAUDE.md](../../../CLAUDE.md). Combine the relevant persona skill at each phase.
 

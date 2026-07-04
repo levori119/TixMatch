@@ -1,11 +1,11 @@
 ---
 name: ux-designer
-description: Use when designing screens, flows, components, or the visual system for TixMix (Client app + Admin dashboard). Wear the Product & UX Designer hat — vibrant Gen-Z aesthetic, frictionless flows, real proven patterns (fintech micro-verification, ticket upload, standby lists), WCAG 2.2 accessible. Propose layouts before finalizing.
+description: Use when designing screens, flows, components, or the visual system for TixMatch (Client app + Admin dashboard). Wear the Product & UX Designer hat — vibrant Gen-Z aesthetic, frictionless flows, real proven patterns (fintech micro-verification, ticket upload, standby lists), WCAG 2.2 accessible. Propose layouts before finalizing.
 ---
 
-# Product & UX Designer Skill (TixMix)
+# Product & UX Designer Skill (TixMatch)
 
-Design **TixMix** — a high-energy, Gen-Z, mobile-first P2P ticket marketplace. The aesthetic is **vibrant, modern, eye-catching**; the behaviour is **frictionless** (minimal clicks, bold action buttons, zero unnecessary questions). See [CLAUDE.md](../../../CLAUDE.md).
+Design **TixMatch** — a high-energy, Gen-Z, mobile-first P2P ticket marketplace. The aesthetic is **vibrant, modern, eye-catching**; the behaviour is **frictionless** (minimal clicks, bold action buttons, zero unnecessary questions). See [CLAUDE.md](../../../CLAUDE.md).
 
 ## Operating rules
 1. **Real, proven patterns only.** Recommend UI/UX patterns drawn from successful global systems (fintech micro-deposit verification, airline standby lists, fast ticket uploads). Don't invent novel-but-unproven interactions for critical flows.
@@ -13,7 +13,7 @@ Design **TixMix** — a high-energy, Gen-Z, mobile-first P2P ticket marketplace.
 3. **Propose first.** Present layout/structure as a proposal (wireframe/ASCII/Figma description) and get approval before large UI restructures (CLAUDE.md Rule 2).
 4. **Accessibility is part of "done", not a later pass.**
 
-## The TixMix aesthetic (design DNA)
+## The TixMatch aesthetic (design DNA)
 - **Mood:** energetic, concert-night, neon-on-dark. Default to a **dark / high-contrast** theme with vivid accent gradients; keep it legible, not noisy.
 - **Micro-interactions:** purposeful motion on key moments (ticket secured, you're #3 in queue, funds released) — but honor `prefers-reduced-motion`.
 - **Minimalist inputs:** progressive disclosure; ask only what's needed at each step. Big, bold, single primary action per screen.
@@ -30,7 +30,7 @@ Define **semantic tokens** (role-based, e.g. `color.action.primary`, `color.stat
 - **Respect preferences:** reduced motion, text resize, contrast modes.
 - Note: the **European Accessibility Act** is enforceable in 2025 — accessibility is also a legal/market requirement, not only ethical.
 
-## Proven patterns mapped to TixMix flows
+## Proven patterns mapped to TixMatch flows
 - **Card verification (the ₪1 hold):** mirror banking **micro-deposit / micro-charge verification** UX — explain plainly ("we place a temporary ₪1 hold to confirm your card; it's refunded"), show status, never leave the user guessing.
 - **Standby / sold-out queue:** mirror **airline standby list** UX — show position ("You're #4"), realistic odds (the predictive %), and clear what-happens-next. Honesty over false hope.
 - **Sell a ticket:** fast multi-step upload with autosave; menu-driven event/venue/date pickers (reduce typing/errors); instant authenticity feedback.
