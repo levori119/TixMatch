@@ -19,11 +19,15 @@ export function ListingForm({
   const [state, formAction, pending] = useActionState(action, { ok: false, message: "" });
   const formRef = useRef<HTMLFormElement>(null);
   const [tiers, setTiers] = useState<{ qty: string; price: string }[]>([]);
+  const [hasLoc, setHasLoc] = useState(false);
+  const [kind, setKind] = useState<"seated" | "standing" | "">("");
 
   useEffect(() => {
     if (state.ok) {
       formRef.current?.reset();
       setTiers([]);
+      setHasLoc(false);
+      setKind("");
     }
   }, [state]);
 
@@ -99,6 +103,34 @@ export function ListingForm({
             </button>
           ) : null}
         </div>
+      </div>
+
+      <div className="row">
+        <label className="label" style={{ display: "flex", gap: 8, alignItems: "center", cursor: "pointer" }}>
+          <input type="checkbox" checked={hasLoc} onChange={(e) => setHasLoc(e.target.checked)} />
+          📍 הוסף מיקום ספציפי
+        </label>
+        {hasLoc ? (
+          <div style={{ marginTop: 10 }}>
+            <div className="genrechips">
+              <label className="genrechk">
+                <input type="radio" name="seatKind" value="seated" checked={kind === "seated"} onChange={() => setKind("seated")} />
+                <span>🪑 ישיבה</span>
+              </label>
+              <label className="genrechk">
+                <input type="radio" name="seatKind" value="standing" checked={kind === "standing"} onChange={() => setKind("standing")} />
+                <span>🧍 עמידה</span>
+              </label>
+            </div>
+            {kind === "seated" ? (
+              <div className="grid-2" style={{ marginTop: 10 }}>
+                <input className="input" name="seatSection" placeholder="אזור / סקשן (למשל: יציע A)" />
+                <input className="input" name="seatRow" placeholder="שורה" />
+                <input className="input" name="seatNumber" placeholder="כיסא / כיסאות (למשל: 12–13)" />
+              </div>
+            ) : null}
+          </div>
+        ) : null}
       </div>
 
       <div className="row">

@@ -5,6 +5,8 @@ const DELIVERY_TYPES: DeliveryType[] = ["physical", "digital"];
 
 const ilsToAgorot = (v: string) => Math.round(Number(v) * 100);
 
+export type SeatKind = "seated" | "standing" | null;
+
 export type ParsedListing = {
   showId: number;
   note: string | null;
@@ -13,6 +15,10 @@ export type ParsedListing = {
   quantityTotal: number;
   soldIndividually: boolean;
   minTicketsPerSale: number;
+  seatKind: SeatKind;
+  seatSection: string | null;
+  seatRow: string | null;
+  seatNumber: string | null;
   tiers: Tier[];
 };
 
@@ -68,8 +74,19 @@ export function parseListingForm(formData: FormData): ParseResult {
     tiers.push({ minQty: q, unitPriceAgorot: p });
   }
 
+  // optional specific location
+  const kindRaw = String(formData.get("seatKind") ?? "");
+  const seatKind: SeatKind = kindRaw === "seated" || kindRaw === "standing" ? kindRaw : null;
+  const clean = (k: string) => (seatKind === "seated" ? String(formData.get(k) ?? "").trim() || null : null);
+  const seatSection = clean("seatSection");
+  const seatRow = clean("seatRow");
+  const seatNumber = clean("seatNumber");
+
   return {
     ok: true,
-    data: { showId, note, priceType, deliveryType, quantityTotal, soldIndividually, minTicketsPerSale, tiers },
+    data: {
+      showId, note, priceType, deliveryType, quantityTotal, soldIndividually, minTicketsPerSale,
+      seatKind, seatSection, seatRow, seatNumber, tiers,
+    },
   };
 }

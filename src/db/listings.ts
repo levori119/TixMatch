@@ -12,6 +12,8 @@ import {
 export type PriceType = "at_cost" | "above_cost" | "discount";
 export type DeliveryType = "physical" | "digital";
 
+export type SeatKind = "seated" | "standing" | null;
+
 export type NewListing = {
   sellerId: number;
   showId: number;
@@ -21,6 +23,10 @@ export type NewListing = {
   quantityTotal: number;
   soldIndividually: boolean;
   minTicketsPerSale: number;
+  seatKind?: SeatKind;
+  seatSection?: string | null;
+  seatRow?: string | null;
+  seatNumber?: string | null;
 };
 
 export type Tier = { minQty: number; unitPriceAgorot: number };
@@ -40,6 +46,10 @@ export async function createListing(input: NewListing, tiers: Tier[]) {
         quantityAvailable: input.quantityTotal,
         soldIndividually: input.soldIndividually,
         minTicketsPerSale: input.minTicketsPerSale,
+        seatKind: input.seatKind ?? null,
+        seatSection: input.seatSection ?? null,
+        seatRow: input.seatRow ?? null,
+        seatNumber: input.seatNumber ?? null,
       })
       .returning();
 
@@ -109,6 +119,10 @@ export function listListingsForSeller(sellerId: number) {
       quantityAvailable: listings.quantityAvailable,
       status: listings.status,
       basePriceAgorot: listingPriceTiers.unitPriceAgorot,
+      seatKind: listings.seatKind,
+      seatSection: listings.seatSection,
+      seatRow: listings.seatRow,
+      seatNumber: listings.seatNumber,
     })
     .from(listings)
     .innerJoin(shows, eq(listings.showId, shows.id))

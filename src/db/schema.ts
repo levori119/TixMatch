@@ -120,6 +120,8 @@ export const shows = pgTable(
 );
 
 // ---------- listings (seller offers) ----------
+export const seatType = pgEnum("seat_type", ["seated", "standing"]);
+
 export const listings = pgTable(
   "listings",
   {
@@ -133,6 +135,11 @@ export const listings = pgTable(
     quantityAvailable: integer("quantity_available").notNull(),
     soldIndividually: boolean("sold_individually").notNull().default(true),
     minTicketsPerSale: integer("min_tickets_per_sale").notNull().default(1),
+    // optional specific location
+    seatKind: seatType("seat_kind"),
+    seatSection: text("seat_section"),
+    seatRow: text("seat_row"),
+    seatNumber: text("seat_number"),
     status: listingStatus("status").notNull().default("active"),
     version: integer("version").notNull().default(0), // optimistic lock (FCFS safety)
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),

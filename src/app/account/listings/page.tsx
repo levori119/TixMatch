@@ -52,6 +52,14 @@ export default async function MyListingsPage() {
                     {new Date(r.startsAt).toLocaleDateString("he-IL")} ·{" "}
                     {r.quantityAvailable}/{r.quantityTotal} זמינים · {statusLabel[r.status] ?? r.status}
                   </span>
+                  {r.seatKind ? (
+                    <span className="sub" style={{ marginTop: 2 }}>
+                      {r.seatKind === "seated" ? "🪑 ישיבה" : "🧍 עמידה"}
+                      {r.seatSection ? ` · אזור ${r.seatSection}` : ""}
+                      {r.seatRow ? ` · שורה ${r.seatRow}` : ""}
+                      {r.seatNumber ? ` · כיסא ${r.seatNumber}` : ""}
+                    </span>
+                  ) : null}
                 </div>
                 {r.status === "active" ? (
                   <form action={cancelListingAction}>

@@ -15,6 +15,13 @@
       "when": 1782842403143,
       "tag": "0001_genres_affinity",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1783181152323,
+      "tag": "0002_listing_seats",
+      "breakpoints": true
     }
   ]
 }
