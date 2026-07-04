@@ -578,6 +578,16 @@ select.input { appearance: none; }
 }
 .show-hero h1 { margin: 0; font-size: clamp(24px, 5vw, 36px); font-weight: 900; letter-spacing: -0.5px; }
 .show-hero .meta-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+
+/* pooled ticket display */
+.pool {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px 18px;
+}
+.pool-price { display: flex; align-items: baseline; gap: 8px; }
+.pool-price .num { font-size: 34px; font-weight: 900; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.pool-price .lbl { color: var(--muted); font-size: 14px; font-weight: 700; }
+.pool-avail { font-weight: 800; }
 .metachip {
   background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.18);
   border-radius: 999px; padding: 6px 12px; font-size: 13px; font-weight: 600;

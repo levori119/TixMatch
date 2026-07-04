@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getShow, getActiveListingsForShow } from "@/db/public";
+import { getShow, getShowPool, countQueuedForShow } from "@/db/public";
 import { genresForEventIds } from "@/db/genres";
 import { recordShowSignal } from "@/db/affinity";
 import { currentUser } from "@/lib/auth";
@@ -14,16 +14,6 @@ function ils(agorot: number | null) {
   return `₪${(agorot / 100).toLocaleString("he-IL")}`;
 }
 
-const priceTypeLabel: Record<string, string> = {
-  at_cost: "מחיר עלות",
-  above_cost: "מעל עלות",
-  discount: "בהנחה",
-};
-const deliveryLabel: Record<string, string> = {
-  digital: "דיגיטלי",
-  physical: "פיזי",
-};
-
 export default async function ShowDetailPage({
   params,
 }: {
@@ -36,8 +26,11 @@ export default async function ShowDetailPage({
   const show = await getShow(showId);
   if (!show) notFound();
 
-  const listings = await getActiveListingsForShow(showId);
-  const user = await currentUser();
+  const [pool, interested, user] = await Promise.all([
+    getShowPool(showId),
+    countQueuedForShow(showId),
+    currentUser(),
+  ]);
 
   const genresByEvent = await genresForEventIds([show.eventId]);
   const showGenres = genresByEvent.get(show.eventId) ?? [];
@@ -45,11 +38,7 @@ export default async function ShowDetailPage({
   // record a taste signal (a view) for logged-in users
   if (user) await recordShowSignal(user.id, showId, 1);
 
-  const fromPrice =
-    listings.length > 0
-      ? `₪${Math.min(...listings.map((l) => l.basePriceAgorot ?? Infinity)) / 100}`
-      : "";
-
+  const fromPrice = pool.fromPriceAgorot != null ? ils(pool.fromPriceAgorot) : "";
   const when = new Date(show.startsAt);
 
   return (
@@ -76,41 +65,38 @@ export default async function ShowDetailPage({
       </div>
 
       <div className="card">
-        <p className="section-title">היצע הכרטיסים ({listings.length})</p>
-        {listings.length === 0 ? (
-          <p className="empty">אין כרגע כרטיסים זמינים למופע זה.</p>
-        ) : (
-          <div className="list">
-            {listings.map((l) => (
-              <div key={l.id} className="list-item" style={{ alignItems: "flex-start" }}>
-                <div className="meta">
-                  <span className="title">{ils(l.basePriceAgorot)} לכרטיס</span>
-                  <span className="sub">
-                    {l.quantityAvailable} זמינים · {priceTypeLabel[l.priceType]} ·{" "}
-                    {deliveryLabel[l.deliveryType]} ·{" "}
-                    {l.soldIndividually ? "ניתן בבודדים" : `מינ' ${l.minTicketsPerSale}`}
-                  </span>
-                  {l.tiers.length > 1 ? (
-                    <span className="sub" style={{ marginTop: 4 }}>
-                      🏷️ הנחת כמות:{" "}
-                      {l.tiers
-                        .filter((t) => t.minQty > 1)
-                        .map((t) => `${ils(t.unitPriceAgorot)} מ-${t.minQty}+`)
-                        .join(" · ")}
-                    </span>
-                  ) : null}
-                  {l.note ? <span className="sub" style={{ marginTop: 4 }}>“{l.note}”</span> : null}
-                  <span className="sub" style={{ marginTop: 4 }}>מוכר: {l.sellerName}</span>
-                </div>
+        <p className="section-title">כרטיסים</p>
+        {pool.available > 0 ? (
+          <>
+            <div className="pool">
+              <div className="pool-price">
+                <span className="lbl">החל מ-</span>
+                <span className="num">{fromPrice}</span>
+                <span className="lbl">לכרטיס</span>
               </div>
-            ))}
-          </div>
+              <div className="pool-avail">🎟️ {pool.available} כרטיסים במאגר</div>
+            </div>
+            <p className="hint" style={{ marginTop: 10 }}>
+              💡 המערכת מחלקת את הכרטיסים אוטומטית לפי התור (First-Come-First-Served) והמחיר
+              הזול ביותר שתואם. <strong>המחיר עשוי לרדת בהמשך</strong> אם כרטיסים לא יימכרו.
+            </p>
+            {interested > 0 ? (
+              <div className="warnbar" style={{ marginTop: 12 }}>
+                👀 {interested} {interested === 1 ? "קונה מתעניין" : "קונים מתעניינים"} כרגע.
+                רק הראשון שמשלים רכישה זוכה — <strong>ייתכן שהמחיר יעלה</strong> עד לסיום הרכישה.
+              </div>
+            ) : null}
+          </>
+        ) : (
+          <p className="empty">
+            אין כרגע כרטיסים במאגר. הצטרף לתור — נשריין לך אוטומטית כשיתווסף כרטיס תואם.
+          </p>
         )}
       </div>
 
       <div className="card">
         {user ? (
-          <BuyBox showId={showId} fromPrice={fromPrice} />
+          <BuyBox showId={showId} fromPrice={fromPrice} interested={interested} />
         ) : (
           <>
             <p className="section-title">רוצה לקנות?</p>

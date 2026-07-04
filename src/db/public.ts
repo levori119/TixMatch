@@ -8,6 +8,7 @@ import {
   events,
   venues,
   users,
+  buyRequests,
 } from "./schema";
 
 /** Shows that currently have at least one active listing with tickets available. */
@@ -133,6 +134,45 @@ export async function getShow(showId: number) {
     .innerJoin(venues, eq(shows.venueId, venues.id))
     .where(eq(shows.id, showId));
   return rows[0] ?? null;
+}
+
+/**
+ * Aggregated ticket pool for a show (sellers hidden). available = total tickets,
+ * fromPriceAgorot = cheapest single-ticket price across the pool.
+ */
+export async function getShowPool(showId: number) {
+  const [row] = await db
+    .select({
+      available: sql<number>`coalesce(sum(${listings.quantityAvailable}), 0)`,
+      fromPriceAgorot: sql<number | null>`min(${listingPriceTiers.unitPriceAgorot})`,
+      sellers: sql<number>`count(distinct ${listings.sellerId})`,
+    })
+    .from(listings)
+    .leftJoin(
+      listingPriceTiers,
+      and(eq(listingPriceTiers.listingId, listings.id), eq(listingPriceTiers.minQty, 1)),
+    )
+    .where(
+      and(
+        eq(listings.showId, showId),
+        eq(listings.status, "active"),
+        gt(listings.quantityAvailable, 0),
+      ),
+    );
+  return {
+    available: Number(row?.available ?? 0),
+    fromPriceAgorot: row?.fromPriceAgorot ?? null,
+    sellers: Number(row?.sellers ?? 0),
+  };
+}
+
+/** How many buyers are currently queued (interested) for a show. */
+export async function countQueuedForShow(showId: number): Promise<number> {
+  const [row] = await db
+    .select({ n: sql<number>`count(*)` })
+    .from(buyRequests)
+    .where(and(eq(buyRequests.showId, showId), eq(buyRequests.status, "queued")));
+  return Number(row?.n ?? 0);
 }
 
 export type ActiveListing = {

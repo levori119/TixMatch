@@ -5,7 +5,15 @@ import { submitBuyRequestAction, type BuyState } from "./actions";
 
 const initial: BuyState = { ok: false, message: "" };
 
-export function BuyBox({ showId, fromPrice }: { showId: number; fromPrice: string }) {
+export function BuyBox({
+  showId,
+  fromPrice,
+  interested = 0,
+}: {
+  showId: number;
+  fromPrice: string;
+  interested?: number;
+}) {
   const [state, action, pending] = useActionState(submitBuyRequestAction, initial);
 
   return (
@@ -13,8 +21,9 @@ export function BuyBox({ showId, fromPrice }: { showId: number; fromPrice: strin
       <input type="hidden" name="showId" value={showId} />
       <p className="section-title">בקשת קנייה — תור הוגן (FCFS)</p>
       <p className="hint" style={{ marginTop: 0 }}>
-        הגדר כמה אתה מוכן לשלם לכרטיס וכמה כרטיסים. נמצא לך את הכרטיס הזול ביותר שתואם
-        (גם זול מהמבוקש). {fromPrice ? `כרגע החל מ-${fromPrice}.` : ""}
+        הגדר כמה אתה מוכן לשלם לכרטיס וכמה כרטיסים. נשריין לך את הכרטיס הזול ביותר שתואם
+        (גם זול מהמבוקש). {fromPrice ? `כרגע החל מ-${fromPrice}.` : ""}{" "}
+        {interested > 0 ? `יש ${interested} מתעניינים נוספים — רק הראשון שמשלים זוכה.` : ""}
       </p>
       <div className="grid-2">
         <div className="row">
