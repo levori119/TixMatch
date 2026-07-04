@@ -12,7 +12,7 @@ export default async function LoginPage() {
   return (
     <main className="container narrow">
       <div className="page-head">
-        <span className="crumb">TixMix</span>
+        <span className="crumb">TixMatch</span>
         <h1 className="page-title">כניסה 🔐</h1>
       </div>
 

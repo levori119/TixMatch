@@ -11,8 +11,8 @@ export default async function RegisterPage() {
   return (
     <main className="container narrow">
       <div className="page-head">
-        <span className="crumb">TixMix</span>
-        <h1 className="page-title">הצטרפות ל-TixMix ✨</h1>
+        <span className="crumb">TixMatch</span>
+        <h1 className="page-title">הצטרפות ל-TixMatch ✨</h1>
       </div>
 
       <div className="card">

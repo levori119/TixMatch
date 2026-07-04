@@ -1,5 +1,5 @@
 /**
- * TixMix database schema (Phase 0 — approved data model).
+ * TixMatch database schema (Phase 0 — approved data model).
  * Money is stored as INTEGER in agorot (1 ILS = 100 agorot) to avoid float errors.
  * See CLAUDE.md §4 (matching/FCFS), §6 (stack), and the software-architect skill.
  */

@@ -34,7 +34,7 @@ export default function Home() {
           <span className="grad">הוגן. מאובטח. מהיר.</span>
         </h1>
         <p className="sub">
-          TixMix מחברת בין קונים למוכרים עם תור הוגן ו-escrow שמבטיח שכל צד מקבל
+          TixMatch מחברת בין קונים למוכרים עם תור הוגן ו-escrow שמבטיח שכל צד מקבל
           את שלו — בלי עוקץ ובלי הפתעות.
         </p>
         <div className="cta-row">

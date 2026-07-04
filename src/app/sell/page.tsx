@@ -18,7 +18,7 @@ export default async function SellPage() {
   return (
     <main className="container narrow">
       <div className="page-head">
-        <span className="crumb">TixMix</span>
+        <span className="crumb">TixMatch</span>
         <h1 className="page-title">מכירת כרטיס 🎫</h1>
       </div>
 

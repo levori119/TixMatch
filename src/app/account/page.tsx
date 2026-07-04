@@ -28,7 +28,7 @@ export default async function AccountPage({
     return (
       <main className="container narrow">
         <div className="page-head">
-          <span className="crumb">TixMix</span>
+          <span className="crumb">TixMatch</span>
           <h1 className="page-title">החשבון שלי 👤</h1>
         </div>
         <div className="card">

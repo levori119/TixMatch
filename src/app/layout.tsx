@@ -10,7 +10,7 @@ const rubik = Rubik({
 });
 
 export const metadata: Metadata = {
-  title: "TixMix · סחר הוגן בכרטיסי הופעות",
+  title: "TixMatch · סחר הוגן בכרטיסי הופעות",
   description: "First Come, First Served. בלי עוקץ, עם escrow מאובטח.",
 };
 
@@ -25,7 +25,7 @@ export default function RootLayout({
         <nav className="nav">
           <a href="/" className="brand">
             <span>🎟️</span>
-            <span className="mark">TixMix</span>
+            <span className="mark">TixMatch</span>
           </a>
           <div className="nav-links">
             <a href="/browse">כרטיסים</a>
