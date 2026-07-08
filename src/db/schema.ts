@@ -73,6 +73,7 @@ export const users = pgTable("users", {
   passwordHash: text("password_hash").notNull(),
   displayName: text("display_name").notNull(),
   phone: text("phone"),
+  friendmatchOptout: boolean("friendmatch_optout").notNull().default(false),
   trustScore: integer("trust_score").notNull().default(0),
   role: userRole("role").notNull().default("client"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
@@ -330,8 +331,9 @@ export const friendships = pgTable(
   "friendships",
   {
     id: serial("id").primaryKey(),
-    userId: integer("user_id").notNull().references(() => users.id),
-    friendId: integer("friend_id").notNull().references(() => users.id),
+    userId: integer("user_id").notNull().references(() => users.id), // requester
+    friendId: integer("friend_id").notNull().references(() => users.id), // addressee
+    status: text("status").notNull().default("pending"), // pending | accepted
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => ({
