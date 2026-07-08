@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Rubik } from "next/font/google";
 import "./globals.css";
 import { BottomNav } from "./_components/bottom-nav";
+import { UserMenu } from "./_components/user-menu";
+import { currentUser } from "@/lib/auth";
 
 const rubik = Rubik({
   subsets: ["hebrew", "latin"],
@@ -14,11 +16,12 @@ export const metadata: Metadata = {
   description: "First Come, First Served. בלי עוקץ, עם escrow מאובטח.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const user = await currentUser();
   return (
     <html lang="he" dir="rtl" className={rubik.className}>
       <body>
@@ -28,11 +31,12 @@ export default function RootLayout({
             <span className="mark">TixMatch</span>
           </a>
           <div className="nav-links">
-            <a href="/browse">כרטיסים</a>
-            <a href="/calendar">יומן</a>
-            <a href="/sell">מכירה</a>
-            <a href="/account">החשבון שלי</a>
-            <a href="/login">כניסה</a>
+            <span className="nav-textlinks">
+              <a href="/browse">כרטיסים</a>
+              <a href="/calendar">יומן</a>
+              <a href="/sell">מכירה</a>
+            </span>
+            <UserMenu name={user?.displayName ?? null} isAdmin={user?.role === "admin"} />
           </div>
         </nav>
         {children}

@@ -57,8 +57,37 @@ body {
   border-bottom: 1px solid var(--border);
 }
 .nav-links { display: flex; gap: 18px; align-items: center; }
+.nav-textlinks { display: flex; gap: 18px; align-items: center; }
 .nav a { color: var(--muted); text-decoration: none; font-weight: 600; font-size: 15px; }
 .nav a:hover { color: var(--text); }
+
+/* user menu (username + caret -> dropdown) */
+.nav-login { color: var(--text) !important; font-weight: 700; }
+.usermenu { position: relative; }
+.usermenu-btn {
+  display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
+  background: var(--surface); border: 1px solid var(--border); color: var(--text);
+  border-radius: 999px; padding: 5px 12px 5px 8px; font-family: inherit; font-weight: 700; font-size: 14px;
+}
+.usermenu-btn:hover { border-color: var(--violet); }
+.usermenu-btn .ua {
+  width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--grad); color: #fff; font-weight: 900; font-size: 13px;
+}
+.usermenu-btn .uc { color: var(--muted); font-size: 12px; }
+.usermenu-pop {
+  position: absolute; top: calc(100% + 8px); inset-inline-end: 0; z-index: 60; min-width: 180px;
+  background: var(--surface-solid); border: 1px solid var(--border); border-radius: 14px; padding: 6px;
+  display: flex; flex-direction: column; box-shadow: 0 20px 50px -18px rgba(0,0,0,0.8);
+}
+.usermenu-pop a, .usermenu-logout {
+  text-decoration: none; color: var(--text); font-family: inherit; font-size: 14px; font-weight: 600;
+  text-align: right; background: transparent; border: none; cursor: pointer;
+  padding: 10px 12px; border-radius: 10px; width: 100%;
+}
+.usermenu-pop a:hover, .usermenu-logout:hover { background: rgba(123,92,255,0.15); }
+.usermenu-logout { color: var(--danger); border-top: 1px solid var(--border); margin-top: 4px; }
+.usermenu-pop form { margin: 0; }
 
 .brand {
   font-weight: 900;
@@ -643,5 +672,27 @@ code { background: rgba(255,255,255,0.08); padding: 1px 6px; border-radius: 6px;
 @media (max-width: 720px) {
   .tabbar { display: block; }
   body { padding-bottom: 72px; }
-  .nav .nav-links { display: none; } /* use bottom bar on mobile */
+  .nav .nav-textlinks { display: none; } /* text links -> bottom bar; keep username */
+}
+
+/* fake ads marquee (home) */
+.adscroll { overflow: hidden; mask-image: linear-gradient(to left, transparent, #000 4%, #000 96%, transparent); }
+.adtrack { display: flex; gap: 14px; width: max-content; animation: bmarqueeX 30s linear infinite; }
+.adscroll:hover .adtrack { animation-play-state: paused; }
+.fakead {
+  position: relative; flex: 0 0 260px; min-height: 132px; text-decoration: none; color: #fff;
+  border-radius: var(--radius); padding: 16px 18px; display: flex; flex-direction: column; gap: 3px;
+  box-shadow: 0 14px 30px -16px rgba(0,0,0,0.6); overflow: hidden;
+}
+.fakead .promo {
+  position: absolute; top: 10px; inset-inline-start: 10px; font-size: 10px; font-weight: 800;
+  background: rgba(0,0,0,0.35); padding: 3px 8px; border-radius: 999px; letter-spacing: 0.5px;
+}
+.fakead .fa-emoji { font-size: 30px; }
+.fakead .fa-title { font-size: 18px; font-weight: 900; }
+.fakead .fa-sub { font-size: 13px; opacity: 0.92; }
+.fakead .fa-cta { margin-top: auto; font-weight: 800; font-size: 13px; }
+@media (prefers-reduced-motion: reduce) {
+  .adtrack { animation: none !important; }
+  .adscroll { overflow-x: auto; mask-image: none; }
 }
