@@ -13,6 +13,7 @@ import {
   boolean,
   timestamp,
   jsonb,
+  doublePrecision,
   uniqueIndex,
   index,
 } from "drizzle-orm/pg-core";
@@ -338,5 +339,22 @@ export const friendships = pgTable(
   },
   (t) => ({
     uniq: uniqueIndex("friendship_uniq").on(t.userId, t.friendId),
+  }),
+);
+
+// FriendMatch Phase 2: opt-in event-day location (proximity)
+export const locations = pgTable(
+  "locations",
+  {
+    id: serial("id").primaryKey(),
+    userId: integer("user_id").notNull().references(() => users.id),
+    showId: integer("show_id").notNull().references(() => shows.id),
+    lat: doublePrecision("lat").notNull(),
+    lng: doublePrecision("lng").notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => ({
+    uniq: uniqueIndex("location_uniq").on(t.userId, t.showId),
+    byShow: index("location_show_idx").on(t.showId, t.updatedAt),
   }),
 );

@@ -5,8 +5,31 @@ import { currentUser } from "@/lib/auth";
 import { createBuyRequest, runMatcherForShow } from "@/db/matching";
 import { recordShowSignal } from "@/db/affinity";
 import { setAttendance } from "@/db/friends";
+import { updateLocation, clearLocation } from "@/db/proximity";
 
 export type BuyState = { ok: boolean; message: string };
+
+export async function updateLocationAction(formData: FormData): Promise<void> {
+  const user = await currentUser();
+  if (!user) return;
+  const showId = Number(formData.get("showId"));
+  const lat = Number(formData.get("lat"));
+  const lng = Number(formData.get("lng"));
+  if (Number.isInteger(showId) && Number.isFinite(lat) && Number.isFinite(lng)) {
+    await updateLocation(user.id, showId, lat, lng);
+    revalidatePath(`/shows/${showId}`);
+  }
+}
+
+export async function clearLocationAction(formData: FormData): Promise<void> {
+  const user = await currentUser();
+  if (!user) return;
+  const showId = Number(formData.get("showId"));
+  if (Number.isInteger(showId)) {
+    await clearLocation(user.id, showId);
+    revalidatePath(`/shows/${showId}`);
+  }
+}
 
 export async function toggleAttendanceAction(formData: FormData): Promise<void> {
   const user = await currentUser();

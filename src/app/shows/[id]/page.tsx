@@ -6,8 +6,10 @@ import { recordShowSignal } from "@/db/affinity";
 import { currentUser } from "@/lib/auth";
 import { coverGradient } from "@/lib/cover";
 import { isAttending, friendsAttending } from "@/db/friends";
+import { nearby } from "@/db/proximity";
 import { BuyBox } from "./buy-box";
-import { toggleAttendanceAction } from "./actions";
+import { toggleAttendanceAction, clearLocationAction } from "./actions";
+import { ProximityShare } from "./proximity-share";
 
 export const dynamic = "force-dynamic";
 
@@ -40,9 +42,9 @@ export default async function ShowDetailPage({
   // record a taste signal (a view) for logged-in users
   if (user) await recordShowSignal(user.id, showId, 1);
 
-  const [going, friendsHere] = user
-    ? await Promise.all([isAttending(user.id, showId), friendsAttending(user.id, showId)])
-    : [false, [] as { id: number; name: string }[]];
+  const [going, friendsHere, near] = user
+    ? await Promise.all([isAttending(user.id, showId), friendsAttending(user.id, showId), nearby(user.id, showId)])
+    : [false, [] as { id: number; name: string }[], { sharing: false, friends: [], othersCount: 0 }];
 
   const fromPrice = pool.fromPriceAgorot != null ? ils(pool.fromPriceAgorot) : "";
   const when = new Date(show.startsAt);
@@ -139,8 +141,43 @@ export default async function ShowDetailPage({
             </p>
           )}
           <p className="hint" style={{ marginTop: 8 }}>
-            סימון "אני מגיע" גלוי רק לחברים שהוספת ב-<Link href="/friends">FriendMatch</Link>.
+            סימון "אני מגיע" גלוי רק לחברים שאישרתם הדדית ב-<Link href="/friends">FriendMatch</Link>.
           </p>
+
+          {/* proximity (opt-in, event day) */}
+          <div style={{ borderTop: "1px solid var(--border)", marginTop: 14, paddingTop: 14 }}>
+            <p className="section-title" style={{ margin: 0 }}>📍 מי בקרבת מקום (1 ק"מ)</p>
+            {!near.sharing ? (
+              <>
+                <ProximityShare showId={showId} />
+                <p className="hint" style={{ marginTop: 8 }}>
+                  🔒 המיקום משותף רק סביב האירוע, נראה רק למי שגם שיתף, ומתאפס אוטומטית. אפשר להפסיק בכל רגע.
+                </p>
+              </>
+            ) : (
+              <>
+                {near.friends.length > 0 ? (
+                  <div className="list" style={{ marginTop: 8 }}>
+                    {near.friends.map((f) => (
+                      <div key={f.name} className="list-item">
+                        <div className="meta"><span className="title">{f.name}</span></div>
+                        <span className="chip">{f.meters < 100 ? "פחות מ-100 מ׳" : `~${(f.meters / 1000).toFixed(1)} ק"מ`}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="muted" style={{ marginTop: 8 }}>אף חבר לא בקרבת מקום כרגע.</p>
+                )}
+                {near.othersCount > 0 ? (
+                  <p className="hint" style={{ marginTop: 8 }}>ועוד {near.othersCount} משתמשי TixMatch בקרבת מקום.</p>
+                ) : null}
+                <form action={clearLocationAction} style={{ marginTop: 10 }}>
+                  <input type="hidden" name="showId" value={showId} />
+                  <button type="submit" className="chip danger">הפסק שיתוף מיקום</button>
+                </form>
+              </>
+            )}
+          </div>
         </div>
       ) : null}
     </main>
