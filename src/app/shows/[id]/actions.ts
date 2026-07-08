@@ -4,8 +4,20 @@ import { revalidatePath } from "next/cache";
 import { currentUser } from "@/lib/auth";
 import { createBuyRequest, runMatcherForShow } from "@/db/matching";
 import { recordShowSignal } from "@/db/affinity";
+import { setAttendance } from "@/db/friends";
 
 export type BuyState = { ok: boolean; message: string };
+
+export async function toggleAttendanceAction(formData: FormData): Promise<void> {
+  const user = await currentUser();
+  if (!user) return;
+  const showId = Number(formData.get("showId"));
+  const going = formData.get("going") === "1";
+  if (Number.isInteger(showId)) {
+    await setAttendance(user.id, showId, going);
+    revalidatePath(`/shows/${showId}`);
+  }
+}
 
 const ils = (v: string) => Math.round(Number(v) * 100);
 

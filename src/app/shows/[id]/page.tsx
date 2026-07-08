@@ -5,7 +5,9 @@ import { genresForEventIds } from "@/db/genres";
 import { recordShowSignal } from "@/db/affinity";
 import { currentUser } from "@/lib/auth";
 import { coverGradient } from "@/lib/cover";
+import { isAttending, friendsAttending } from "@/db/friends";
 import { BuyBox } from "./buy-box";
+import { toggleAttendanceAction } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -37,6 +39,10 @@ export default async function ShowDetailPage({
 
   // record a taste signal (a view) for logged-in users
   if (user) await recordShowSignal(user.id, showId, 1);
+
+  const [going, friendsHere] = user
+    ? await Promise.all([isAttending(user.id, showId), friendsAttending(user.id, showId)])
+    : [false, [] as { id: number; name: string }[]];
 
   const fromPrice = pool.fromPriceAgorot != null ? ils(pool.fromPriceAgorot) : "";
   const when = new Date(show.startsAt);
@@ -110,6 +116,33 @@ export default async function ShowDetailPage({
           </>
         )}
       </div>
+
+      {user ? (
+        <div className="card">
+          <div className="dash-head">
+            <p className="section-title" style={{ margin: 0 }}>👥 FriendMatch</p>
+            <form action={toggleAttendanceAction}>
+              <input type="hidden" name="showId" value={showId} />
+              <input type="hidden" name="going" value={going ? "0" : "1"} />
+              <button type="submit" className={going ? "chip active" : "btn"}>
+                {going ? "✓ אני מגיע (בטל)" : "🙋 אני מגיע"}
+              </button>
+            </form>
+          </div>
+          {friendsHere.length > 0 ? (
+            <p style={{ marginTop: 10 }}>
+              🎉 חברים שמגיעים: <strong>{friendsHere.map((f) => f.name).join(", ")}</strong>
+            </p>
+          ) : (
+            <p className="muted" style={{ marginTop: 10 }}>
+              אף אחד מהחברים שלך לא סימן שהוא מגיע. <Link href="/friends">נהל חברים →</Link>
+            </p>
+          )}
+          <p className="hint" style={{ marginTop: 8 }}>
+            סימון "אני מגיע" גלוי רק לחברים שהוספת ב-<Link href="/friends">FriendMatch</Link>.
+          </p>
+        </div>
+      ) : null}
     </main>
   );
 }

@@ -310,3 +310,31 @@ export const userGenreAffinity = pgTable(
     uniq: uniqueIndex("user_genre_uniq").on(t.userId, t.genreId),
   }),
 );
+
+// ---------- FriendMatch: attendance + phone friendships ----------
+export const attendances = pgTable(
+  "attendances",
+  {
+    id: serial("id").primaryKey(),
+    userId: integer("user_id").notNull().references(() => users.id),
+    showId: integer("show_id").notNull().references(() => shows.id),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => ({
+    uniq: uniqueIndex("attendance_uniq").on(t.userId, t.showId),
+    byShow: index("attendance_show_idx").on(t.showId),
+  }),
+);
+
+export const friendships = pgTable(
+  "friendships",
+  {
+    id: serial("id").primaryKey(),
+    userId: integer("user_id").notNull().references(() => users.id),
+    friendId: integer("friend_id").notNull().references(() => users.id),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => ({
+    uniq: uniqueIndex("friendship_uniq").on(t.userId, t.friendId),
+  }),
+);

@@ -178,6 +178,7 @@ export default async function AccountPage({
       </div>
 
       <div className="tiles">
+        <Link href="/friends" className="tile"><span className="te">👥</span><span className="tt">FriendMatch</span><span className="ts">חברים בהופעות</span></Link>
         <Link href="/account/payment" className="tile"><span className="te">💳</span><span className="tt">אמצעי תשלום</span><span className="ts">כרטיס ואימות</span></Link>
         <Link href="/account/requests" className="tile"><span className="te">🎯</span><span className="tt">הבקשות שלי</span><span className="ts">בתור לקנייה</span></Link>
         <Link href="/account/sales" className="tile"><span className="te">💰</span><span className="tt">המכירות שלי</span><span className="ts">מסירת כרטיס</span></Link>

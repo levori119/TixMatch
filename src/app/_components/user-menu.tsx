@@ -37,6 +37,7 @@ export function UserMenu({ name, isAdmin }: { name: string | null; isAdmin: bool
       {open ? (
         <div className="usermenu-pop" role="menu">
           <Link href="/account" onClick={() => setOpen(false)}>👤 החשבון שלי</Link>
+          <Link href="/friends" onClick={() => setOpen(false)}>👥 FriendMatch</Link>
           <Link href="/account/trades" onClick={() => setOpen(false)}>🤝 העסקאות שלי</Link>
           {isAdmin ? <Link href="/admin/settings" onClick={() => setOpen(false)}>🛡️ ניהול</Link> : null}
           <form action={logoutToHomeAction}>
