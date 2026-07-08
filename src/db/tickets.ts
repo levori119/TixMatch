@@ -1,8 +1,9 @@
 import "server-only";
-import { and, eq, desc } from "drizzle-orm";
+import { and, eq, desc, inArray, sql } from "drizzle-orm";
 import { db } from "./index";
-import { ticketFiles, listings, shows, events, venues, auditLog } from "./schema";
+import { ticketFiles, listings, shows, events, venues, auditLog, trades, matches } from "./schema";
 import { venueProvider, genBarcode } from "./venue-provider";
+import { extractFromPdf, type Extracted } from "@/lib/ticket-extract";
 
 export class TicketError extends Error {}
 
@@ -15,14 +16,36 @@ export async function uploadTicketFile(input: {
   dataBase64: string;
   barcode?: string | null;
 }) {
-  // ownership check
+  // ownership check + current seat info
   const [own] = await db
-    .select({ id: listings.id })
+    .select({
+      id: listings.id,
+      seatKind: listings.seatKind,
+    })
     .from(listings)
     .where(and(eq(listings.id, input.listingId), eq(listings.sellerId, input.sellerId)));
   if (!own) throw new TicketError("הכרטיס לא שייך לך.");
 
-  const barcode = input.barcode?.trim() || genBarcode();
+  // best-effort auto-extract from PDF
+  let extracted: Extracted = {};
+  if (input.mime.includes("pdf")) {
+    extracted = await extractFromPdf(Buffer.from(input.dataBase64, "base64"));
+  }
+
+  // fill listing seat info from the ticket if the seller left it blank
+  if (!own.seatKind && (extracted.section || extracted.row || extracted.seat)) {
+    await db
+      .update(listings)
+      .set({
+        seatKind: "seated",
+        seatSection: extracted.section ?? null,
+        seatRow: extracted.row ?? null,
+        seatNumber: extracted.seat ?? null,
+      })
+      .where(eq(listings.id, input.listingId));
+  }
+
+  const barcode = input.barcode?.trim() || extracted.barcode || genBarcode();
   await venueProvider.registerBarcode(barcode, `listing_${input.listingId}`);
 
   const [row] = await db
@@ -41,9 +64,69 @@ export async function uploadTicketFile(input: {
     action: "ticket_upload",
     entity: "listing",
     entityId: String(input.listingId),
-    payload: { fileName: input.fileName, barcode },
+    payload: { fileName: input.fileName, barcode, extracted },
   });
-  return row;
+  return { ...row, extracted };
+}
+
+/**
+ * Return a ticket file for download IF the requester may access it: the seller,
+ * or a buyer whose trade for that listing has funds held / been delivered / released.
+ */
+export async function getTicketFileForDownload(fileId: number, userId: number) {
+  const [f] = await db
+    .select({
+      id: ticketFiles.id,
+      mime: ticketFiles.mime,
+      fileName: ticketFiles.fileName,
+      dataBase64: ticketFiles.dataBase64,
+      listingId: ticketFiles.listingId,
+      sellerId: listings.sellerId,
+    })
+    .from(ticketFiles)
+    .innerJoin(listings, eq(ticketFiles.listingId, listings.id))
+    .where(eq(ticketFiles.id, fileId));
+  if (!f) return null;
+
+  if (f.sellerId === userId) return f;
+
+  const [buy] = await db
+    .select({ n: sql<number>`count(*)` })
+    .from(trades)
+    .innerJoin(matches, eq(trades.matchId, matches.id))
+    .where(
+      and(
+        eq(matches.listingId, f.listingId),
+        eq(trades.buyerId, userId),
+        inArray(trades.state, ["funds_held", "ticket_delivered", "released"]),
+      ),
+    );
+  return Number(buy?.n ?? 0) > 0 ? f : null;
+}
+
+/** Ticket files a buyer is entitled to download (paid/delivered/released). */
+export function listBuyerDownloads(userId: number) {
+  return db
+    .select({
+      fileId: ticketFiles.id,
+      fileName: ticketFiles.fileName,
+      eventName: events.name,
+      startsAt: shows.startsAt,
+      state: trades.state,
+    })
+    .from(trades)
+    .innerJoin(matches, eq(trades.matchId, matches.id))
+    .innerJoin(listings, eq(matches.listingId, listings.id))
+    .innerJoin(ticketFiles, eq(ticketFiles.listingId, listings.id))
+    .innerJoin(shows, eq(listings.showId, shows.id))
+    .innerJoin(events, eq(shows.eventId, events.id))
+    .where(
+      and(
+        eq(trades.buyerId, userId),
+        inArray(trades.state, ["funds_held", "ticket_delivered", "released"]),
+      ),
+    )
+    .orderBy(desc(ticketFiles.id));
 }
 
 export function listTicketFilesForListing(listingId: number) {

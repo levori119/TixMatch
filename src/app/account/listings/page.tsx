@@ -95,6 +95,7 @@ export default async function MyListingsPage({
                           {f.rotatedAt ? " · 🔄 הונפק מחדש (הישן בוטל)" : " · פעיל"}
                         </span>
                       </div>
+                      <a href={`/api/tickets/${f.id}/download`} className="chip">⬇️ הורדה</a>
                     </div>
                   ))}
                 </div>

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { currentUser } from "@/lib/auth";
 import { listTradesForBuyer } from "@/db/escrow";
+import { listBuyerDownloads } from "@/db/tickets";
 import { payAction, confirmAction } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -29,7 +30,10 @@ export default async function MyTradesPage({
   const user = await currentUser();
   if (!user) redirect("/login");
   const { ok, err } = await searchParams;
-  const trades = await listTradesForBuyer(user.id);
+  const [trades, downloads] = await Promise.all([
+    listTradesForBuyer(user.id),
+    listBuyerDownloads(user.id),
+  ]);
 
   return (
     <main className="container narrow">
@@ -55,7 +59,7 @@ export default async function MyTradesPage({
                     {t.eventName} · {ils(t.amountAgorot)}
                   </span>
                   <span className="sub">
-                    {t.venueName} · מוכר: {t.sellerName} · {stateLabel[t.state] ?? t.state}
+                    {t.venueName} · {stateLabel[t.state] ?? t.state}
                   </span>
                 </div>
                 {t.state === "offer_accepted" ? (
@@ -74,6 +78,23 @@ export default async function MyTradesPage({
           </div>
         )}
       </div>
+
+      {downloads.length > 0 ? (
+        <div className="card">
+          <p className="section-title">🎫 הכרטיסים שלי להורדה</p>
+          <div className="list">
+            {downloads.map((d) => (
+              <div key={d.fileId} className="list-item">
+                <div className="meta">
+                  <span className="title">{d.eventName}</span>
+                  <span className="sub">{new Date(d.startsAt).toLocaleDateString("he-IL")}</span>
+                </div>
+                <a href={`/api/tickets/${d.fileId}/download`} className="btn">⬇️ הורדת כרטיס</a>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : null}
 
       <p className="hint" style={{ marginTop: 14 }}>
         🔒 התשלום מוחזק בנאמנות (escrow) ומשתחרר למוכר רק לאחר שתאשר קבלת הכרטיס.
