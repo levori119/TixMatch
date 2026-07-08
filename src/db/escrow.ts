@@ -17,6 +17,7 @@ import {
 } from "./schema";
 import { paymentProvider } from "./payment-provider";
 import { hasVerifiedCard } from "./payments";
+import { rotateBarcodesForListing } from "./tickets";
 
 type Tx = Parameters<Parameters<typeof db.transaction>[0]>[0];
 
@@ -106,7 +107,7 @@ export async function deliverTrade(tradeId: number, actorId: number) {
 
 /** Buyer confirms receipt -> released: capture + pay out seller minus commission. */
 export async function confirmTrade(tradeId: number, actorId: number) {
-  return db.transaction(async (tx) => {
+  const result = await db.transaction(async (tx) => {
     const [t] = await tx.select().from(trades).where(eq(trades.id, tradeId));
     if (!t) throw new EscrowError("עסקה לא נמצאה.");
     if (t.buyerId !== actorId) throw new EscrowError("רק הקונה יכול לאשר קבלה.");
@@ -144,7 +145,19 @@ export async function confirmTrade(tradeId: number, actorId: number) {
         .where(eq(buyRequests.id, m.buyRequestId));
     }
     await audit(tx, actorId, "escrow_release", tradeId, { commission, sellerNet });
+    return m?.listingId ?? null;
   });
+
+  // on sale completion: invalidate the seller's barcode(s) at the venue and
+  // issue new ones to the buyer (sandbox provider). Non-financial; runs after.
+  const listingId = (result as number | null) ?? null;
+  if (listingId) {
+    try {
+      await rotateBarcodesForListing(listingId, actorId);
+    } catch (e) {
+      console.error("barcode rotation failed", e);
+    }
+  }
 }
 
 /** Refund/cancel: returns held funds (if any), restores inventory. */

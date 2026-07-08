@@ -156,6 +156,26 @@ export const listingPriceTiers = pgTable("listing_price_tiers", {
   unitPriceAgorot: integer("unit_price_agorot").notNull(),
 });
 
+// uploaded ticket file + its barcode lifecycle (upload -> on sale: rotate)
+export const ticketFiles = pgTable(
+  "ticket_files",
+  {
+    id: serial("id").primaryKey(),
+    listingId: integer("listing_id").notNull().references(() => listings.id),
+    fileName: text("file_name"),
+    mime: text("mime"),
+    dataBase64: text("data_base64"), // small ticket PDFs/images, base64
+    barcode: text("barcode"), // current valid barcode
+    previousBarcode: text("previous_barcode"), // invalidated on transfer
+    rotatedAt: timestamp("rotated_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => ({
+    byListing: index("ticket_files_listing_idx").on(t.listingId),
+    byBarcode: index("ticket_files_barcode_idx").on(t.barcode),
+  }),
+);
+
 export const ticketUnits = pgTable("ticket_units", {
   id: serial("id").primaryKey(),
   listingId: integer("listing_id").notNull().references(() => listings.id),

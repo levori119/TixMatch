@@ -338,6 +338,14 @@ select.input { appearance: none; }
 .picker-item .title { font-weight: 700; }
 .picker-item .sub { color: var(--muted); font-size: 13px; }
 
+.ticket-upload {
+  display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+  margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);
+}
+.ticket-upload .input { flex: 1; min-width: 150px; padding: 9px 12px; font-size: 14px; }
+.ticket-upload input[type="file"] { padding: 7px; }
+code { background: rgba(255,255,255,0.08); padding: 1px 6px; border-radius: 6px; font-size: 12px; }
+
 .muted { color: var(--muted); }
 
 @keyframes pop { from { transform: scale(0.96); opacity: 0; } to { transform: scale(1); opacity: 1; } }
