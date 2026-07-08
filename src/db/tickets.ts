@@ -69,6 +69,27 @@ export async function uploadTicketFile(input: {
   return { ...row, extracted };
 }
 
+/** Save a ticket file attached to a listing-form submission (optional). */
+export async function saveTicketFromForm(
+  formData: FormData,
+  listingId: number,
+  sellerId: number,
+): Promise<boolean> {
+  const file = formData.get("file") as File | null;
+  if (!file || typeof file === "string" || file.size === 0) return false;
+  if (file.size > 8 * 1024 * 1024) throw new TicketError("קובץ גדול מדי (מקס' 8MB).");
+  const buf = Buffer.from(await file.arrayBuffer());
+  await uploadTicketFile({
+    listingId,
+    sellerId,
+    fileName: file.name,
+    mime: file.type || "application/octet-stream",
+    dataBase64: buf.toString("base64"),
+    barcode: String(formData.get("barcode") ?? "").trim() || null,
+  });
+  return true;
+}
+
 /**
  * Return a ticket file for download IF the requester may access it: the seller,
  * or a buyer whose trade for that listing has funds held / been delivered / released.

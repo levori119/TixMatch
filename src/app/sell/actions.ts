@@ -6,6 +6,7 @@ import { parseListingForm } from "@/lib/listing-input";
 import { createListing } from "@/db/listings";
 import { runMatcherForShow } from "@/db/matching";
 import { hasVerifiedCard } from "@/db/payments";
+import { saveTicketFromForm } from "@/db/tickets";
 
 export type ListingFormState = { ok: boolean; message: string };
 
@@ -27,10 +28,24 @@ export async function createMyListingAction(
   if (!parsed.ok) return { ok: false, message: parsed.error };
   const { tiers, ...listing } = parsed.data;
 
-  await createListing({ sellerId: user.id, ...listing }, tiers);
+  const created = await createListing({ sellerId: user.id, ...listing }, tiers);
+
+  // optional: attach the uploaded ticket file (extracts barcode/seat best-effort)
+  let uploaded = false;
+  try {
+    uploaded = await saveTicketFromForm(formData, created.id, user.id);
+  } catch {
+    /* non-blocking: listing is published even if the file failed */
+  }
+
   // waiting buyers in the FCFS queue may grab this immediately
   await runMatcherForShow(listing.showId);
 
   revalidatePath("/account/listings");
-  return { ok: true, message: "הכרטיס פורסם למכירה! 🎉 עקוב ב\"הכרטיסים שלי\"." };
+  return {
+    ok: true,
+    message: uploaded
+      ? "הכרטיס פורסם והקובץ הועלה! 🎉 עקוב ב\"הכרטיסים שלי\"."
+      : "הכרטיס פורסם למכירה! 🎉 עקוב ב\"הכרטיסים שלי\".",
+  };
 }

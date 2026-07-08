@@ -5,6 +5,7 @@ import { getSession } from "@/lib/auth";
 import { parseListingForm } from "@/lib/listing-input";
 import { createListing, deleteListing } from "@/db/listings";
 import { runMatcherForShow } from "@/db/matching";
+import { saveTicketFromForm } from "@/db/tickets";
 
 export type FormState = { ok: boolean; message: string };
 
@@ -19,7 +20,12 @@ export async function createListingAction(
   if (!parsed.ok) return { ok: false, message: parsed.error };
   const { tiers, ...listing } = parsed.data;
 
-  await createListing({ sellerId: session.uid, ...listing }, tiers);
+  const created = await createListing({ sellerId: session.uid, ...listing }, tiers);
+  try {
+    await saveTicketFromForm(formData, created.id, session.uid);
+  } catch {
+    /* non-blocking */
+  }
   await runMatcherForShow(listing.showId);
 
   revalidatePath("/admin/listings");

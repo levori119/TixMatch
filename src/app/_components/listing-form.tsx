@@ -138,6 +138,17 @@ export function ListingForm({
         <input className="input" id="l-note" name="note" placeholder="למשל: ישיבה צמודה, יציאה מוקדמת…" />
       </div>
 
+      <div className="row">
+        <label className="label">🎫 הכרטיס הדיגיטלי (אופציונלי)</label>
+        <p className="hint" style={{ marginTop: 0 }}>
+          העלה את קובץ הכרטיס (PDF/תמונה). ננסה לחלץ ממנו ברקוד ומיקום אוטומטית.
+        </p>
+        <div className="ticket-upload" style={{ border: "none", padding: 0, marginTop: 6 }}>
+          <input className="input" type="file" name="file" accept=".pdf,image/*" />
+          <input className="input" name="barcode" placeholder="ברקוד (אם ידוע — אחרת ייחלץ/ייווצר)" dir="ltr" />
+        </div>
+      </div>
+
       <button className="btn" type="submit" disabled={pending}>
         {pending ? "מפרסם…" : submitLabel}
       </button>
