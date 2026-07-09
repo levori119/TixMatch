@@ -444,6 +444,12 @@ code { background: rgba(255,255,255,0.08); padding: 1px 6px; border-radius: 6px;
   background: rgba(7,6,15,0.66); border: 1px solid rgba(255,255,255,0.18);
   border-radius: 999px; padding: 5px 10px; font-size: 12px; font-weight: 700; color: #fff;
 }
+.scard .cover .friendsgo {
+  position: absolute; bottom: 10px; inset-inline-start: 10px;
+  background: rgba(7,6,15,0.72); backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,255,255,0.18); border-radius: 999px;
+  padding: 4px 10px; font-size: 12px; font-weight: 800; color: #fff;
+}
 .scard .body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
 .scard .ev { font-size: 16px; font-weight: 800; line-height: 1.25; }
 .scard .vn { font-size: 13px; color: var(--muted); }

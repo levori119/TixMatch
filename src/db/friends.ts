@@ -185,6 +185,29 @@ export async function friendsAttending(userId: number, showId: number) {
     .orderBy(asc(users.displayName));
 }
 
+/** Count of my (accepted, non-opted-out) friends attending each of the given shows. */
+export async function friendsAttendingCountByShow(
+  userId: number,
+  showIds: number[],
+): Promise<Map<number, number>> {
+  if (showIds.length === 0) return new Map();
+  const ids = await friendIdList(userId);
+  if (ids.length === 0) return new Map();
+  const rows = await db
+    .select({ showId: attendances.showId, n: sql<number>`count(*)` })
+    .from(attendances)
+    .innerJoin(users, eq(attendances.userId, users.id))
+    .where(
+      and(
+        inArray(attendances.showId, showIds),
+        inArray(attendances.userId, ids),
+        eq(users.friendmatchOptout, false),
+      ),
+    )
+    .groupBy(attendances.showId);
+  return new Map(rows.map((r) => [r.showId, Number(r.n)]));
+}
+
 /** Upcoming shows my (accepted) friends are attending — excluding opted-out. */
 export async function friendsUpcoming(userId: number) {
   const ids = await friendIdList(userId);

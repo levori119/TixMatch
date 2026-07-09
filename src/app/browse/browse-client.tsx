@@ -16,6 +16,7 @@ export type BrowseShow = {
   available: number;
   genres: CardGenre[];
   score: number;
+  friendsGoing?: number;
 };
 
 function ils(a: number | null) {
@@ -34,6 +35,9 @@ function ShowCard({ s }: { s: BrowseShow }) {
           <span className="m">{s.month}</span>
         </span>
         {s.available > 0 ? null : <span className="soldout">אזל</span>}
+        {s.friendsGoing && s.friendsGoing > 0 ? (
+          <span className="friendsgo">👥 {s.friendsGoing} {s.friendsGoing === 1 ? "חבר" : "חברים"}</span>
+        ) : null}
       </div>
       <div className="body">
         <span className="ev">{s.eventName}</span>

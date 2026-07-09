@@ -1,6 +1,7 @@
 import { listUpcomingShows } from "@/db/public";
 import { genresForEventIds } from "@/db/genres";
 import { getAffinityMap, topGenres } from "@/db/affinity";
+import { friendsAttendingCountByShow } from "@/db/friends";
 import { currentUser } from "@/lib/auth";
 import { BrowseClient, type BrowseShow } from "./browse-client";
 
@@ -15,10 +16,13 @@ export default async function BrowsePage() {
   const [rows, user] = await Promise.all([listUpcomingShows(), currentUser()]);
 
   const eventIds = Array.from(new Set(rows.map((r) => r.eventId)));
-  const [genresByEvent, affinity, faves] = await Promise.all([
+  const [genresByEvent, affinity, faves, friendsCount] = await Promise.all([
     genresForEventIds(eventIds),
     user ? getAffinityMap(user.id) : Promise.resolve(new Map<number, number>()),
     user ? topGenres(user.id, 3) : Promise.resolve([]),
+    user
+      ? friendsAttendingCountByShow(user.id, rows.map((r) => r.id))
+      : Promise.resolve(new Map<number, number>()),
   ]);
 
   const shows: BrowseShow[] = rows.map((r) => {
@@ -36,6 +40,7 @@ export default async function BrowsePage() {
       available: Number(r.available),
       genres: g.map((x) => ({ slug: x.slug, nameHe: x.nameHe, emoji: x.emoji })),
       score,
+      friendsGoing: friendsCount.get(r.id) ?? 0,
     };
   });
 
