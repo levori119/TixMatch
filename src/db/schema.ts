@@ -358,3 +358,26 @@ export const locations = pgTable(
     byShow: index("location_show_idx").on(t.showId, t.updatedAt),
   }),
 );
+
+// ---------- promo ads (admin-managed, scheduled) ----------
+export const ads = pgTable(
+  "ads",
+  {
+    id: serial("id").primaryKey(),
+    title: text("title").notNull(),
+    subtitle: text("subtitle"),
+    emoji: text("emoji"),
+    colorFrom: text("color_from").notNull().default("#ff2e93"),
+    colorTo: text("color_to").notNull().default("#7b5cff"),
+    cta: text("cta"),
+    href: text("href").notNull().default("/browse"),
+    active: boolean("active").notNull().default(true),
+    startsAt: timestamp("starts_at", { withTimezone: true }),
+    endsAt: timestamp("ends_at", { withTimezone: true }),
+    sortOrder: integer("sort_order").notNull().default(0),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => ({
+    byActive: index("ads_active_idx").on(t.active, t.sortOrder),
+  }),
+);
