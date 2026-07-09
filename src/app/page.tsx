@@ -4,7 +4,6 @@ import { listUpcomingShows } from "@/db/public";
 import { genresForEventIds } from "@/db/genres";
 import { getAffinityMap } from "@/db/affinity";
 import { coverGradient, initialOf } from "@/lib/cover";
-import { FAKE_ADS } from "@/lib/fake-ads";
 import { LoginForm } from "./login/login-form";
 
 export const dynamic = "force-dynamic";
@@ -86,26 +85,10 @@ export default async function Home() {
         <Link href="/browse" className="dash-cta buy"><span className="e">🎯</span><span>גילוי ובקשת קנייה</span></Link>
       </div>
 
-      {/* fake ads marquee */}
-      <div className="rowhead">מבצעים ופרסומות 📣</div>
-      <div className="adscroll">
-        <div className="adtrack">
-          {[...FAKE_ADS, ...FAKE_ADS].map((a, i) => (
-            <Link key={`${a.id}-${i}`} href={a.href} className="fakead" style={{ background: `linear-gradient(120deg, ${a.from}, ${a.to})` }} aria-hidden={i >= FAKE_ADS.length}>
-              <span className="promo">פרסומת</span>
-              <span className="fa-emoji">{a.emoji}</span>
-              <span className="fa-title">{a.title}</span>
-              <span className="fa-sub">{a.sub}</span>
-              <span className="fa-cta">{a.cta} →</span>
-            </Link>
-          ))}
-        </div>
-      </div>
-
       {/* real hot-ticket banners */}
       {hot.length > 0 ? (
         <>
-          <div className="rowhead" style={{ marginTop: 22 }}>כרטיסים חמים 🔥</div>
+          <div className="rowhead">כרטיסים חמים 🔥</div>
           <div className="bento">
             {hot.map(({ r }) => (
               <Link key={r.id} href={`/shows/${r.id}`} className="scard">

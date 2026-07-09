@@ -3,6 +3,7 @@ import { Rubik } from "next/font/google";
 import "./globals.css";
 import { BottomNav } from "./_components/bottom-nav";
 import { UserMenu } from "./_components/user-menu";
+import { AdRail } from "./_components/ad-rail";
 import { currentUser } from "@/lib/auth";
 
 const rubik = Rubik({
@@ -39,6 +40,7 @@ export default async function RootLayout({
             <UserMenu name={user?.displayName ?? null} isAdmin={user?.role === "admin"} />
           </div>
         </nav>
+        <AdRail />
         {children}
         <BottomNav />
       </body>

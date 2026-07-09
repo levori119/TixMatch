@@ -681,6 +681,42 @@ code { background: rgba(255,255,255,0.08); padding: 1px 6px; border-radius: 6px;
   .nav .nav-textlinks { display: none; } /* text links -> bottom bar; keep username */
 }
 
+/* ===== global promo rail (fixed to the physical LEFT, scrolls top -> bottom) ===== */
+.adrail { display: none; }
+
+@keyframes adRailDown {
+  from { transform: translateY(-50%); }
+  to { transform: translateY(0); }
+}
+
+@media (min-width: 1200px) {
+  body { padding-left: 212px; }
+  .adrail {
+    display: flex; flex-direction: column;
+    position: fixed; left: 0; top: 0; bottom: 0; width: 212px; z-index: 30;
+    padding: 70px 12px 14px;
+    border-right: 1px solid var(--border);
+    background: rgba(7, 6, 15, 0.55);
+    backdrop-filter: blur(10px);
+  }
+  .adrail-head { font-size: 13px; font-weight: 900; color: var(--muted); margin-bottom: 10px; }
+  .adrail-viewport {
+    flex: 1; overflow: hidden;
+    mask-image: linear-gradient(to bottom, transparent, #000 5%, #000 95%, transparent);
+  }
+  .adrail-track {
+    display: flex; flex-direction: column; gap: 12px;
+    animation: adRailDown 45s linear infinite;
+  }
+  .adrail:hover .adrail-track { animation-play-state: paused; }
+  .adrail .fakead { flex: none; width: 100%; min-height: 150px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .adrail-track { animation: none !important; }
+  .adrail-viewport { overflow-y: auto; mask-image: none; }
+}
+
 /* fake ads marquee (home) */
 .adscroll { overflow: hidden; mask-image: linear-gradient(to left, transparent, #000 4%, #000 96%, transparent); }
 .adtrack { display: flex; gap: 14px; width: max-content; animation: bmarqueeX 30s linear infinite; }
